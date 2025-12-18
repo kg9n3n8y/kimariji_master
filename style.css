@@ -33,6 +33,7 @@ h2 {
 
 h3 {
   margin           : 0;
+  font-size        : 20px;
 }
 
 .view {
@@ -710,7 +711,7 @@ button.study-card-button:focus-visible {
 }
 
 .study-card-kimariji {
-  font-size        : 18px;
+  font-size        : 24px;
   font-weight      : bold;
   color            : #cc0000;
 }
@@ -742,7 +743,7 @@ button.study-card-button:focus-visible {
 
 .study-detail-kimariji {
   margin           : 0 0 6px;
-  font-size        : 28px;
+  font-size        : 24px;
   color            : #cc0000;
   font-weight      : bold;
 }
