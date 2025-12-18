@@ -2,6 +2,17 @@ html {
   touch-action     : manipulation;
 }
 
+:root {
+  --color-primary          : #336633;
+  --color-primary-dark     : #224422;
+  --color-accent-orange    : #ff9d4d;
+  --color-accent-blue      : #4f9dff;
+  --color-surface          : #ffffff;
+  --button-radius          : 999px;
+  --button-shadow          : 0 6px 16px rgba(0, 0, 0, 0.18);
+  --button-shadow-hover    : 0 10px 22px rgba(0, 0, 0, 0.2);
+}
+
 body {
   background-color : #E1DAC3;
   font-size        : 20px;
@@ -65,6 +76,13 @@ h3 {
   font-size        : 22px;
   text-align       : left;
   color            : #1f3a1f;
+}
+
+.offline-note {
+  font-size        : 12px;
+  color            : #2b2b2b;
+  margin           : 8px 0 0;
+  opacity          : 0.85;
 }
 
 .time-history {
@@ -173,13 +191,17 @@ button {
   gap              : 10px;
   font-weight      : bold;
   letter-spacing   : 0.04em;
+  border-radius    : var(--button-radius);
+  padding          : 0.85rem 1.3rem;
+  min-height       : 62px;
   transition       : transform 0.15s ease, box-shadow 0.15s ease;
-  box-shadow       : 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow       : var(--button-shadow);
 }
 
 .action-button:hover,
 .action-button:focus-visible {
-  transform        : translateY(-1px);
+  transform        : translateY(-2px);
+  box-shadow       : var(--button-shadow-hover);
 }
 
 .action-button-icon {
@@ -205,6 +227,14 @@ button {
   background       : linear-gradient(130deg, #d46b43, #ff9d4d);
 }
 
+.action-button--reveal {
+  background       : linear-gradient(130deg, #e38421, #ffcb5d);
+}
+
+.action-button--return {
+  background       : linear-gradient(130deg, #258457, #6aca8a);
+}
+
 .action-button:disabled {
   background       : #9E9E9E;
   box-shadow       : none;
@@ -216,34 +246,61 @@ button {
 }
 
 button.secondary {
-  background-color : #5A6B5A;
+  background       : linear-gradient(130deg, #536853, #6f8770);
+  border-radius    : 18px;
+  font-weight      : bold;
+  letter-spacing   : 0.02em;
+  box-shadow       : var(--button-shadow);
+  transition       : transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
+  width            : 100%;
+  max-width        : none;
 }
 
 button.secondary.all-on-button {
-  background-color : #336633;
+  background       : linear-gradient(130deg, #2f8e4e, #5ec078);
 }
 
 button.secondary.danger {
-  background-color : #8C3A3A;
+  background       : linear-gradient(130deg, #c74444, #f17373);
+}
+
+button.secondary:hover,
+button.secondary:focus-visible {
+  transform        : translateY(-2px);
+  box-shadow       : var(--button-shadow-hover);
 }
 
 .floating-button {
-  background-color : #2f6630;
+  background       : linear-gradient(130deg, #2f7a3c, #56b56e);
   color            : #FFFFFF;
   border           : none;
-  border-radius    : 999px;
-  padding          : 8px 22px;
+  border-radius    : var(--button-radius);
+  padding          : 10px 26px;
   font-size        : 18px;
-  box-shadow       : 0 4px 10px rgba(0, 0, 0, 0.15);
+  font-weight      : bold;
+  letter-spacing   : 0.03em;
+  display          : inline-flex;
+  align-items      : center;
+  justify-content  : center;
+  gap              : 8px;
+  box-shadow       : var(--button-shadow);
   width            : auto;
   max-width        : none;
   cursor           : pointer;
+  transition       : transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
+}
+
+.floating-button:hover,
+.floating-button:focus-visible {
+  transform        : translateY(-2px);
+  box-shadow       : var(--button-shadow-hover);
 }
 
 .floating-button:disabled {
   background-color : #8BA08B;
   color            : #F1F1F1;
   cursor           : not-allowed;
+  transform        : none;
   box-shadow       : none;
 }
 
@@ -265,7 +322,10 @@ button.secondary.danger {
 
 button:disabled {
   background-color : #9E9E9E;
+  color            : #f5f5f5;
   cursor           : not-allowed;
+  box-shadow       : none;
+  transform        : none;
 }
 
 #kimariji {
@@ -314,12 +374,26 @@ button:disabled {
 }
 
 .modal-close-button {
-  background-color : #336633;
+  background       : linear-gradient(130deg, #2f6fed, #5d9dff);
   color            : #fff;
-  border-radius    : 999px;
+  border-radius    : var(--button-radius);
   width            : auto;
   font-size        : 18px;
-  padding          : 6px 16px;
+  padding          : 8px 18px;
+  font-weight      : bold;
+  letter-spacing   : 0.05em;
+  display          : inline-flex;
+  align-items      : center;
+  justify-content  : center;
+  gap              : 6px;
+  box-shadow       : var(--button-shadow);
+  transition       : transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.modal-close-button:hover,
+.modal-close-button:focus-visible {
+  transform        : translateY(-2px);
+  box-shadow       : var(--button-shadow-hover);
 }
 
 .modal-description {
@@ -371,19 +445,30 @@ button:disabled {
 }
 
 .option-toggle {
-  min-width        : 72px;
-  border-radius    : 999px;
-  border           : 2px solid #336633;
-  background-color : #fff;
-  color            : #336633;
+  min-width        : 84px;
+  border-radius    : var(--button-radius);
+  border           : 2px solid rgba(51, 102, 51, 0.3);
+  background       : linear-gradient(130deg, rgba(255, 255, 255, 0.95), rgba(244, 244, 244, 0.98));
+  color            : #1f3a1f;
   font-weight      : bold;
   font-size        : 18px;
   width            : auto;
+  box-shadow       : 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition       : transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease, color 0.2s ease;
 }
 
-.option-toggle.active {
-  background-color : #336633;
+.option-toggle.active,
+.option-toggle[aria-pressed="true"] {
+  background       : linear-gradient(130deg, #278b69, #5dc08e);
   color            : #fff;
+  border-color     : transparent;
+  box-shadow       : 0 8px 16px rgba(39, 139, 105, 0.35);
+}
+
+.option-toggle:hover,
+.option-toggle:focus-visible {
+  transform        : translateY(-2px);
+  box-shadow       : var(--button-shadow-hover);
 }
 
 .individual-settings-section {
@@ -403,9 +488,19 @@ button:disabled {
   background       : transparent;
   color            : #2f6fed;
   font-size        : 16px;
+  font-weight      : bold;
+  letter-spacing   : 0.02em;
   text-decoration  : underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
   width            : auto;
   padding          : 0;
+  transition       : color 0.2s ease;
+}
+
+.link-button:hover,
+.link-button:focus-visible {
+  color            : #1d4fd0;
 }
 
 .individual-settings-list {
@@ -416,35 +511,43 @@ button:disabled {
 
 button.individual-setting-button {
   max-width        : none;
-  border-radius    : 8px;
+  border-radius    : 12px;
   border           : 1px solid rgba(51, 102, 51, 0.3);
-  background-color : rgba(255, 255, 255, 0.95);
-  color            : #333;
+  background       : rgba(255, 255, 255, 0.96);
+  color            : #1f1f1f;
   display          : flex;
   justify-content  : center;
   align-items      : center;
-  padding          : 8px 4px;
+  padding          : 10px 6px;
   font-size        : 14px;
   cursor           : pointer;
-  transition       : border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
-  min-height       : 44px;
+  transition       : transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  min-height       : 48px;
+  box-shadow       : 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
 button.individual-setting-button .kimariji {
   font-size        : 18px;
   font-weight      : bold;
-  color            : #cc0000;
 }
 
 button.individual-setting-button.is-on {
-  border-color     : #2f8b5c;
-  background-color : rgba(47, 139, 92, 0.12);
+  border-color     : transparent;
+  background       : linear-gradient(130deg, #2f6fed, #5d9dff);
+  color            : #ffffff;
+  box-shadow       : 0 8px 16px rgba(47, 111, 237, 0.35);
 }
 
 button.individual-setting-button.is-off {
-  border-color     : rgba(128, 128, 128, 0.5);
-  background-color : rgba(237, 237, 237, 0.9);
-  color            : #6b6b6b;
+  border-color     : #336633;
+  background-color : rgba(255, 255, 255, 0.98);
+  color            : #1f1f1f;
+}
+
+button.individual-setting-button:hover,
+button.individual-setting-button:focus-visible {
+  transform        : translateY(-1px);
+  box-shadow       : 0 6px 14px rgba(0, 0, 0, 0.12);
 }
 
 .bulk-settings {
@@ -482,17 +585,18 @@ button.individual-setting-button.is-off {
 }
 
 .toggle-button {
-  border           : 2px solid #336633;
-  border-radius    : 10px;
-  background-color : rgba(255, 255, 255, 0.95);
+  border           : 2px solid rgba(51, 102, 51, 0.35);
+  border-radius    : 14px;
+  background       : linear-gradient(130deg, rgba(255, 255, 255, 0.96), rgba(244, 244, 244, 0.98));
   color            : #333333;
   font-size        : 20px;
   font-weight      : bold;
-  padding          : 10px 0;
+  padding          : 6px 0;
   cursor           : pointer;
-  transition       : background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition       : transform 0.15s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.15s ease;
   width            : 100%;
   max-width        : none;
+  box-shadow       : 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .toggle-button.letter-button {
@@ -510,9 +614,16 @@ button.individual-setting-button.is-off {
 }
 
 .toggle-button.active {
-  background-color : #336633;
+  background       : linear-gradient(130deg, #278b69, #5dc08e);
   color            : #FFFFFF;
-  border-color     : #224422;
+  border-color     : transparent;
+  box-shadow       : 0 8px 16px rgba(39, 139, 105, 0.3);
+}
+
+.toggle-button:hover,
+.toggle-button:focus-visible {
+  transform        : translateY(-2px);
+  box-shadow       : var(--button-shadow-hover);
 }
 
 .toggle-button:focus-visible {
@@ -564,7 +675,7 @@ button.study-card-button {
   display          : flex;
   align-items      : center;
   gap              : 8px;
-  background-color : rgba(255, 255, 255, 0.95);
+  background       : linear-gradient(120deg, rgba(255, 255, 255, 0.98), rgba(246, 246, 246, 0.98));
   color            : #1f1f1f;
   border           : 1px solid rgba(51, 102, 51, 0.4);
   border-radius    : 10px;
@@ -572,13 +683,15 @@ button.study-card-button {
   font-size        : 16px;
   text-align       : left;
   cursor           : pointer;
-  transition       : border-color 0.2s ease, box-shadow 0.2s ease;
+  transition       : border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  box-shadow       : 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 button.study-card-button:hover,
 button.study-card-button:focus-visible {
-  border-color     : #336633;
-  box-shadow       : 0 0 0 2px rgba(51, 102, 51, 0.15);
+  border-color     : rgba(47, 111, 237, 0.4);
+  box-shadow       : 0 8px 18px rgba(0, 0, 0, 0.12);
+  transform        : translateY(-2px);
 }
 
 .study-card-button img {
@@ -646,19 +759,38 @@ button.study-card-button:focus-visible {
 }
 
 .study-detail-selection-toggle {
-  background-color : #2f9e44;
-  border           : 1px solid #257534;
-  border-radius    : 12px;
-  padding          : 6px 14px;
+  background       : linear-gradient(130deg, #2f9e44, #59c16c);
+  border           : none;
+  border-radius    : var(--button-radius);
+  padding          : 8px 18px;
   font-size        : 16px;
   width            : auto;
   color            : #ffffff;
+  font-weight      : bold;
+  letter-spacing   : 0.03em;
+  box-shadow       : var(--button-shadow);
+  transition       : transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .study-detail-selection-toggle.off {
-  background-color : #ffffff;
+  background       : linear-gradient(130deg, #f8f8f8, #ffffff);
   color            : #111111;
-  border-color     : #333333;
+  border           : 1px solid rgba(51, 51, 51, 0.25);
+  box-shadow       : 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.study-detail-selection-toggle:hover,
+.study-detail-selection-toggle:focus-visible {
+  transform        : translateY(-2px);
+  box-shadow       : var(--button-shadow-hover);
+}
+
+.study-detail-selection-toggle:disabled {
+  background       : #b7b7b7;
+  color            : #f3f3f3;
+  box-shadow       : none;
+  cursor           : not-allowed;
+  transform        : none;
 }
 
 .study-detail-list {

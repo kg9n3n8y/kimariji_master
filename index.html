@@ -61,6 +61,7 @@
         <h2 class="time-panel-title">直近の決まり字チェック</h2>
         <ul id="time-history" class="time-history"></ul>
       </section>
+      <p class="offline-note">ブラウザからホーム画面に追加すると、オフラインで利用できます</p>
     </main>
 
     <main id="game-screen" class="view hidden" aria-live="polite">
@@ -71,11 +72,17 @@
       <div id="kimariji" aria-live="assertive"></div>
 
       <div class="button-container">
-        <button id="kimariji-button">決まり字を見る</button>
+        <button id="kimariji-button" class="action-button action-button--reveal">
+          <span class="action-button-icon" aria-hidden="true">👀</span>
+          <span class="action-button-text">決まり字を見る</span>
+        </button>
       </div>
 
       <div class="button-container">
-          <button id="reload-button">トップに戻る</button>
+          <button id="reload-button" class="action-button action-button--return">
+            <span class="action-button-icon" aria-hidden="true">🏠</span>
+            <span class="action-button-text">トップに戻る</span>
+          </button>
       </div>
     </main>
 
