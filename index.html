@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta property="og:title" content="決まり字マスター">
+    <meta property="og:description" content="小倉百人一首の決まり字を覚えて確認するためのWebアプリ">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kg9n3n8y.github.io/kimariji_master/">
+    <meta property="og:image" content="https://kg9n3n8y.github.io/kimariji_master/thumbnail.png">
+    <meta property="og:site_name" content="決まり字マスター">
+    <meta property="og:locale" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="決まり字マスター">
+    <meta name="twitter:description" content="小倉百人一首の決まり字を覚えて確認するためのWebアプリ">
+    <meta name="twitter:image" content="https://kg9n3n8y.github.io/kimariji_master/thumbnail.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#E1DAC3">
+    <title>決まり字マスター</title>
+    <link rel="manifest" href="manifest.json"/>
+    <link rel="shortcut icon" type="image/png" href="./icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./fudalist.js"></script>
+  </head>
+
+  <body>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').then(registration => {
+          console.log('ServiceWorker registration successful.');
+        }).catch(err => {
+          console.log('ServiceWorker registration failed.');
+        });
+      }
+    </script>
+
+    <main id="top-screen" class="view">
+      <h1 class="app-title">決まり字マスター</h1>
+      <p id="selection-summary" class="info-text"></p>
+      <div class="button-container">
+        <button id="open-study-button" class="action-button action-button--study">
+          <span class="action-button-icon" aria-hidden="true">📖</span>
+          <span class="action-button-text">決まり字を覚える</span>
+        </button>
+      </div>
+      <div class="button-container">
+        <button id="start-button" class="action-button action-button--start">
+          <span class="action-button-icon" aria-hidden="true">🏁</span>
+          <span class="action-button-text">決まり字チェック</span>
+        </button>
+      </div>
+      <div class="button-container">
+        <button id="open-settings-button" class="action-button action-button--settings">
+          <span class="action-button-icon" aria-hidden="true">⚙️</span>
+          <span class="action-button-text">使う札の設定</span>
+        </button>
+      </div>
+      <section class="time-panel">
+        <h2 class="time-panel-title">直近の決まり字チェック</h2>
+        <ul id="time-history" class="time-history"></ul>
+      </section>
+    </main>
+
+    <main id="game-screen" class="view hidden" aria-live="polite">
+      <div id="image-container">
+          <img id="random-image" src="./torifuda/tori_0.png" alt="取り札">
+      </div>
+
+      <div id="kimariji" aria-live="assertive"></div>
+
+      <div class="button-container">
+        <button id="kimariji-button">決まり字を見る</button>
+      </div>
+
+      <div class="button-container">
+          <button id="reload-button">トップに戻る</button>
+      </div>
+    </main>
+
+    <main id="study-list-screen" class="view hidden wide-view" aria-live="polite">
+      <div class="study-floating-bar">
+        <button id="study-close-button" class="floating-button" type="button">トップに戻る</button>
+      </div>
+      <p class="study-description">札を選んで語呂合わせ画像や歌の情報を確認できます。</p>
+      <p id="study-list-message" class="study-message">データを読み込んでいます...</p>
+      <div id="study-list-container" class="study-list-container" aria-live="off"></div>
+    </main>
+
+    <main id="study-detail-screen" class="view hidden wide-view" aria-live="polite">
+      <div class="study-floating-bar detail">
+        <div class="study-detail-nav-buttons">
+          <button id="study-detail-prev-button" class="floating-button" type="button"> ← </button>
+          <button id="study-detail-back-button" class="floating-button" type="button">一覧へ</button>
+          <button id="study-detail-next-button" class="floating-button" type="button"> → </button>
+        </div>
+      </div>
+      <div class="study-detail-body">
+        <div class="study-image-wrapper">
+          <img id="study-detail-image" src="" alt="決まり字の語呂合わせ画像">
+        </div>
+        <div class="study-detail-info">
+          <div class="study-detail-info-header">
+            <p id="study-detail-kimariji" class="study-detail-kimariji"></p>
+            <button id="study-detail-selection-toggle" class="study-detail-selection-toggle" type="button" aria-pressed="true">設定オン</button>
+          </div>
+          <dl class="study-detail-list">
+            <dt>上の句</dt>
+            <dd id="study-detail-upper"></dd>
+            <dt>下の句</dt>
+            <dd id="study-detail-lower"></dd>
+            <dt>歌番号</dt>
+            <dd id="study-detail-number"></dd>
+            <dt>作者</dt>
+            <dd id="study-detail-author"></dd>
+          </dl>
+        </div>
+      </div>
+    </main>
+
+    <div id="modal-overlay" class="modal-overlay hidden"></div>
+    <section id="settings-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="settings-title">使う札の設定</h2>
+          <button id="close-settings" class="modal-close-button" type="button">完了</button>
+        </div>
+        <div id="settings-list">
+          <div class="option-card">
+            <div class="option-card-text">
+              <span class="option-card-title">逆向きの札あり</span>
+              <span class="option-card-caption">オンにすると上下逆向きの札も出題されます。</span>
+            </div>
+            <button id="reverse-toggle" class="option-toggle" type="button" aria-pressed="true">オン</button>
+          </div>
+          <div id="bulk-settings-panel" class="bulk-settings" tabindex="-1">
+            <div class="individual-settings-header">
+              <h3>グループで選ぶ</h3>
+              <button id="toggle-individual-settings" class="link-button" type="button">個別に選ぶへ移動</button>
+            </div>
+            <p class="bulk-description">決まり字ごとのグループ表示でまとめて切り替えられます。</p>
+            <div id="bulk-settings-list"></div>
+          </div>
+          <div class="individual-settings-section" id="individual-settings-panel">
+            <div class="individual-settings-header">
+              <h3>個別に選ぶ</h3>
+            </div>
+            <div id="individual-settings-list" class="individual-settings-list" aria-live="polite"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="enable-all-button" class="secondary all-on-button">すべてオン</button>
+          <button id="disable-all-button" class="secondary danger">すべてオフ</button>
+        </div>
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+
+</html>

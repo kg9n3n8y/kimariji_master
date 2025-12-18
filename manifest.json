@@ -1,0 +1,25 @@
+{
+    "id": "./",
+    "name": "決まり字マスター",
+    "short_name": "決まり字",
+    "description": "百人一首の決まり字を語呂合わせ付きで学んで暗記できる練習アプリです。",
+    "start_url": "./?source=pwa",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#E1DAC3",
+    "theme_color": "#E1DAC3",
+    "icons": [
+        {
+            "src": "./icon.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "./icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
