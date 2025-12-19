@@ -62,6 +62,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const studyDetailAuthor = document.getElementById('study-detail-author');
     const studyDetailSelectionToggle = document.getElementById('study-detail-selection-toggle');
     const views = Array.from(document.querySelectorAll('.view'));
+    const kimarijiButtonText = kimarijiButton ? kimarijiButton.querySelector('.action-button-text') : null;
+    const goroModal = document.getElementById('goro-modal');
+    const goroModalOverlay = document.getElementById('goro-modal-overlay');
+    const goroModalImage = document.getElementById('goro-modal-image');
+    const goroModalCloseButton = document.getElementById('goro-modal-close');
 
     let fudaOrder = [];
     let startTime;
@@ -76,6 +81,14 @@ document.addEventListener("DOMContentLoaded", function() {
     let studyDataLoaded = false;
     let studyDataLoadError = false;
     let currentStudyIndex = -1;
+    const KIMARIJI_BUTTON_STATE = {
+        reveal: 'reveal',
+        goro: 'goro'
+    };
+    const KIMARIJI_BUTTON_GORO_CLASS = 'action-button--goro';
+    let kimarijiButtonState = KIMARIJI_BUTTON_STATE.reveal;
+    let currentGoroImagePath = '';
+    let currentFudaLabel = '';
 
     buildIndividualSettingsUI();
     buildBulkSettingsUI();
@@ -83,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
     updateStudyDetailSelectionToggle();
     updateSelectionSummary();
     renderTimeHistory();
+    setKimarijiButtonState(KIMARIJI_BUTTON_STATE.reveal);
 
     function formatTime(ms) {
         if (!Number.isFinite(ms)) {
@@ -151,6 +165,40 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    function setKimarijiButtonState(state) {
+        kimarijiButtonState = state;
+        const isGoro = state === KIMARIJI_BUTTON_STATE.goro;
+        if (kimarijiButtonText) {
+            kimarijiButtonText.textContent = isGoro ? '覚え方を見る' : '決まり字を見る';
+        }
+        if (kimarijiButton) {
+            kimarijiButton.classList.toggle(KIMARIJI_BUTTON_GORO_CLASS, isGoro);
+        }
+    }
+
+    function showKimarijiText() {
+        if (!kimariji) {
+            return;
+        }
+        kimariji.style.display = 'flex';
+        setKimarijiButtonState(KIMARIJI_BUTTON_STATE.goro);
+    }
+
+    function hideKimarijiText() {
+        if (!kimariji) {
+            return;
+        }
+        kimariji.style.display = 'none';
+        setKimarijiButtonState(KIMARIJI_BUTTON_STATE.reveal);
+    }
+
+    function resetKimarijiDisplay() {
+        if (kimariji) {
+            kimariji.textContent = '';
+        }
+        hideKimarijiText();
+    }
+
     function buildLetterToFudaMap() {
         const map = new Map();
         fudalist.forEach(fuda => {
@@ -175,6 +223,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function getFudaNosForLetter(letter) {
         return letterToFudaMap.get(letter) || [];
+    }
+
+    function getGoroSlidePath(fuda) {
+        if (!fuda || typeof fuda !== 'object') {
+            return '';
+        }
+        const imageFile = typeof fuda.goroImage === 'string' ? fuda.goroImage.trim() : '';
+        if (!imageFile) {
+            return '';
+        }
+        return `./goro_slide/${imageFile}`;
     }
 
     function loadFudaSelectionState() {
@@ -443,8 +502,10 @@ document.addEventListener("DOMContentLoaded", function() {
         currentFuda = 0;
         startTime = null;
         imageElement.src = PLACEHOLDER_IMAGE;
-        kimariji.textContent = '';
-        kimariji.style.display = 'none';
+        currentGoroImagePath = '';
+        currentFudaLabel = '';
+        closeGoroModal();
+        resetKimarijiDisplay();
         return true;
     }
 
@@ -465,8 +526,10 @@ document.addEventListener("DOMContentLoaded", function() {
     function returnToTop() {
         switchView(topScreen);
         imageElement.src = PLACEHOLDER_IMAGE;
-        kimariji.textContent = '';
-        kimariji.style.display = 'none';
+        currentGoroImagePath = '';
+        currentFudaLabel = '';
+        closeGoroModal();
+        resetKimarijiDisplay();
         currentFuda = 0;
         startTime = null;
         fudaOrder = [];
@@ -481,6 +544,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const useReverse = reverseEnabled && Math.random() < 0.5;
         imageElement.src = useReverse ? fuda.reverse : fuda.normal;
         kimariji.textContent = fuda.kimariji;
+        currentGoroImagePath = getGoroSlidePath(fuda);
+        currentFudaLabel = fuda.kimariji || '';
     }
 
     function stopTimer() {
@@ -508,10 +573,39 @@ document.addEventListener("DOMContentLoaded", function() {
         modalOverlay.classList.add('hidden');
     }
 
-    // 決まり字の表示
+    function openGoroModal(imagePath) {
+        if (!imagePath || !goroModal || !goroModalOverlay || !goroModalImage) {
+            return;
+        }
+        const labelText = currentFudaLabel ? `${currentFudaLabel}の語呂合わせ画像` : '語呂合わせ画像';
+        goroModalImage.src = imagePath;
+        goroModalImage.alt = labelText;
+        goroModal.classList.remove('hidden');
+        goroModalOverlay.classList.remove('hidden');
+    }
+
+    function closeGoroModal() {
+        if (!goroModal || !goroModalOverlay || !goroModalImage) {
+            return;
+        }
+        goroModal.classList.add('hidden');
+        goroModalOverlay.classList.add('hidden');
+        goroModalImage.src = '';
+        goroModalImage.alt = '語呂合わせ画像';
+    }
+
+    // 決まり字の表示／覚え方モーダル
     kimarijiButton.addEventListener('click', function() {
-        if (window.getComputedStyle(kimariji).display === 'none') {
-            kimariji.style.display = 'flex';
+        if (kimarijiButtonState === KIMARIJI_BUTTON_STATE.goro) {
+            if (!currentGoroImagePath) {
+                alert('この札の覚え方画像は登録されていません。');
+                return;
+            }
+            openGoroModal(currentGoroImagePath);
+            return;
+        }
+        if (window.getComputedStyle(kimariji).display === 'none' && kimariji.textContent) {
+            showKimarijiText();
         }
     });
 
@@ -519,21 +613,26 @@ document.addEventListener("DOMContentLoaded", function() {
         if (gameScreen.classList.contains('hidden') || fudaOrder.length === 0) {
             return;
         }
+        closeGoroModal();
+        if (currentFuda === fudaOrder.length) {
+            stopTimer();
+            return;
+        }
         if (currentFuda === 0) {
             startTime = Date.now();
-            displayFuda(currentFuda);
-            currentFuda++;
-        } else if (currentFuda === fudaOrder.length) {
-            stopTimer();
-        } else {
-            displayFuda(currentFuda);
-            currentFuda++;
         }
-
-        if (window.getComputedStyle(kimariji).display === 'flex') {
-            kimariji.style.display = 'none';
-        }
+        displayFuda(currentFuda);
+        currentFuda++;
+        hideKimarijiText();
     });
+
+    if (goroModalOverlay) {
+        goroModalOverlay.addEventListener('click', closeGoroModal);
+    }
+
+    if (goroModalCloseButton) {
+        goroModalCloseButton.addEventListener('click', closeGoroModal);
+    }
 
     function confirmReturnToTop() {
         const confirmReset = window.confirm("トップ画面に戻ります。よろしいですか？");

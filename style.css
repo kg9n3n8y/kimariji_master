@@ -33,7 +33,7 @@ h2 {
 
 h3 {
   margin           : 0;
-  font-size        : 20px;
+  font-size        : 18px;
 }
 
 .view {
@@ -144,18 +144,23 @@ h3 {
 }
 
 .info-text {
-  font-size        : 22px;
+  font-size        : 20px;
   margin           : 0;
   color            : #333333;
 }
 
 #image-container {
-  width            : 300px;
+  max-width        : 300px;
   height           : auto;
   display          : flex;
   align-items      : center;
   justify-content  : center;
   overflow         : hidden;
+}
+
+#image-container img {
+  max-width        : 85%;
+  max-height       : 85%;
 }
 
 img {
@@ -193,8 +198,8 @@ button {
   font-weight      : bold;
   letter-spacing   : 0.04em;
   border-radius    : var(--button-radius);
-  padding          : 0.85rem 1.3rem;
-  min-height       : 62px;
+  padding          : 0.6rem;
+  min-height       : 60px;
   transition       : transform 0.15s ease, box-shadow 0.15s ease;
   box-shadow       : var(--button-shadow);
 }
@@ -234,6 +239,16 @@ button {
 
 .action-button--return {
   background       : linear-gradient(130deg, #258457, #6aca8a);
+}
+
+.action-button--goro {
+  background       : linear-gradient(125deg, #3b74ff, var(--color-accent-blue));
+  color            : #ffffff;
+  box-shadow       : 0 8px 20px rgba(59, 116, 255, 0.4);
+}
+
+.action-button--reveal.action-button--goro {
+  background       : linear-gradient(125deg, #3b74ff, var(--color-accent-blue));
 }
 
 .action-button:disabled {
@@ -330,7 +345,7 @@ button:disabled {
 }
 
 #kimariji {
-  font-size        : 48px;
+  font-size        : 40px;
   font-weight      : bold;
   color            : #cc0000;
   margin           : 0;
@@ -352,7 +367,7 @@ button:disabled {
   top              : 50%;
   left             : 50%;
   transform        : translate(-50%, -50%);
-  width            : min(90vw, 480px);
+  width            : min(100vw, 480px);
   max-height       : 90vh;
   z-index          : 20;
 }
@@ -360,11 +375,11 @@ button:disabled {
 .modal-content {
   background-color : #fff;
   border-radius    : 12px;
-  padding          : 12px 16px 16px;
+  padding          : 8px;
   box-shadow       : 0 8px 24px rgba(0, 0, 0, 0.2);
   display          : flex;
   flex-direction   : column;
-  max-height       : 90vh;
+  max-height       : 75vh;
 }
 
 .modal-header {
@@ -408,6 +423,64 @@ button:disabled {
   flex-direction   : column;
   gap              : 8px;
   width            : 100%;
+}
+
+#goro-modal-overlay {
+  z-index          : 30;
+}
+
+#goro-modal {
+  z-index          : 40;
+  width            : min(100vw, 600px);
+}
+
+.goro-modal-frame {
+  background-color : #fff;
+  border-radius    : 16px;
+  padding          : 48px 0px 18px;
+  box-shadow       : 0 8px 24px rgba(0, 0, 0, 0.25);
+  position         : relative;
+  max-height       : calc(90vh - 24px);
+  display          : flex;
+  align-items      : center;
+  justify-content  : center;
+  width            : min(600px, calc(100vw));
+  box-sizing       : border-box;
+}
+
+.goro-modal-image {
+  display          : block;
+  width            : 100%;
+  max-width        : 100%;
+  height           : auto;
+  max-height       : calc(90vh - 120px);
+  object-fit       : contain;
+  border-radius    : 8px;
+  background-color : #fff;
+}
+
+.goro-modal-close-button {
+  position         : absolute;
+  top              : 12px;
+  right            : 12px;
+  width            : 44px;
+  height           : 44px;
+  max-width        : none;
+  border-radius    : 50%;
+  background-color : rgba(0, 0, 0, 0.7);
+  color            : #fff;
+  font-size        : 24px;
+  font-weight      : bold;
+  padding          : 0;
+  line-height      : 1;
+  box-shadow       : none;
+}
+
+.goro-modal-close-button:hover,
+.goro-modal-close-button:focus-visible {
+  background-color : rgba(0, 0, 0, 0.85);
+  transform        : none;
+  box-shadow       : none;
 }
 
 #settings-list {
@@ -488,7 +561,7 @@ button:disabled {
 .link-button {
   background       : transparent;
   color            : #2f6fed;
-  font-size        : 16px;
+  font-size        : 14px;
   font-weight      : bold;
   letter-spacing   : 0.02em;
   text-decoration  : underline;
@@ -519,7 +592,7 @@ button.individual-setting-button {
   display          : flex;
   justify-content  : center;
   align-items      : center;
-  padding          : 10px 6px;
+  padding          : 0px;
   font-size        : 14px;
   cursor           : pointer;
   transition       : transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
@@ -540,7 +613,7 @@ button.individual-setting-button.is-on {
 }
 
 button.individual-setting-button.is-off {
-  border-color     : #336633;
+  border-color     : #2f6fed;
   background-color : rgba(255, 255, 255, 0.98);
   color            : #1f1f1f;
 }
@@ -601,16 +674,16 @@ button.individual-setting-button:focus-visible {
 }
 
 .toggle-button.letter-button {
-  min-height       : 52px;
+  min-height       : 40px;
   display          : flex;
   align-items      : center;
   justify-content  : center;
-  font-size        : 24px;
+  font-size        : 20px;
 }
 
 .toggle-button.bundle-button {
   margin-bottom    : 4px;
-  font-size        : 24px;
+  font-size        : 20px;
   letter-spacing   : 0.05em;
 }
 
@@ -842,13 +915,13 @@ button.study-card-button:focus-visible {
   }
 
   .toggle-button.letter-button {
-    min-height     : 48px;
-    font-size      : 24px;
+    min-height     : 40px;
+    font-size      : 20px;
   }
 
   .toggle-button.bundle-button {
-    font-size      : 24px;
-    padding        : 8px 6px;
+    font-size      : 20px;
+    padding        : 6px;
   }
 }
 
