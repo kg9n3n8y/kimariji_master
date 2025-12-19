@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const studyDetailNumber = document.getElementById('study-detail-number');
     const studyDetailAuthor = document.getElementById('study-detail-author');
     const studyDetailSelectionToggle = document.getElementById('study-detail-selection-toggle');
+    const studyDetailInfo = document.querySelector('.study-detail-info');
     const views = Array.from(document.querySelectorAll('.view'));
     const kimarijiButtonText = kimarijiButton ? kimarijiButton.querySelector('.action-button-text') : null;
     const goroModal = document.getElementById('goro-modal');
@@ -86,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function() {
         goro: 'goro'
     };
     const KIMARIJI_BUTTON_GORO_CLASS = 'action-button--goro';
+    const STUDY_DETAIL_INFO_TOGGLE_CLASS = 'study-detail-info--toggleable';
     let kimarijiButtonState = KIMARIJI_BUTTON_STATE.reveal;
     let currentGoroImagePath = '';
     let currentFudaLabel = '';
@@ -472,7 +474,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateSelectionSummary() {
         const available = getSelectedFudaList().length;
         if (available === 0) {
-            selectionSummary.textContent = '設定されている札がありません';
+            selectionSummary.textContent = 'チェックする札が未設定です';
             startButton.disabled = true;
         } else {
             selectionSummary.textContent = `現在の設定枚数：${available}枚`;
@@ -768,13 +770,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (studyDetailSelectionToggle) {
         studyDetailSelectionToggle.addEventListener('click', () => {
-            const currentItem = studyItems[currentStudyIndex];
-            if (!currentItem || !Number.isFinite(currentItem.fudaNo)) {
+            toggleCurrentStudySelection();
+        });
+    }
+
+    if (studyDetailInfo) {
+        studyDetailInfo.addEventListener('click', (event) => {
+            if (event.target.closest('.study-detail-selection-toggle')) {
                 return;
             }
-            const nextState = !isFudaEnabledByNo(currentItem.fudaNo);
-            setFudaState(currentItem.fudaNo, nextState);
-            handleSelectionStateChanged();
+            toggleCurrentStudySelection();
         });
     }
 
@@ -863,11 +868,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function updateStudyDetailSelectionToggle() {
+        const currentItem = studyItems[currentStudyIndex];
+        const hasTarget = Boolean(currentItem) && Number.isFinite(currentItem.fudaNo);
+
+        if (studyDetailInfo) {
+            studyDetailInfo.classList.toggle(STUDY_DETAIL_INFO_TOGGLE_CLASS, hasTarget);
+        }
         if (!studyDetailSelectionToggle) {
             return;
         }
-        const currentItem = studyItems[currentStudyIndex];
-        const hasTarget = Boolean(currentItem) && Number.isFinite(currentItem.fudaNo);
         studyDetailSelectionToggle.disabled = !hasTarget;
         if (!hasTarget) {
             studyDetailSelectionToggle.classList.remove('off');
@@ -879,6 +888,16 @@ document.addEventListener("DOMContentLoaded", function() {
         studyDetailSelectionToggle.classList.toggle('off', !isActive);
         studyDetailSelectionToggle.textContent = isActive ? '設定オン' : '設定オフ';
         studyDetailSelectionToggle.setAttribute('aria-pressed', String(isActive));
+    }
+
+    function toggleCurrentStudySelection() {
+        const currentItem = studyItems[currentStudyIndex];
+        if (!currentItem || !Number.isFinite(currentItem.fudaNo)) {
+            return;
+        }
+        const nextState = !isFudaEnabledByNo(currentItem.fudaNo);
+        setFudaState(currentItem.fudaNo, nextState);
+        handleSelectionStateChanged();
     }
 
     function buildStudyItemsFromFudalist() {

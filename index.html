@@ -38,30 +38,32 @@
 
     <main id="top-screen" class="view">
       <h1 class="app-title">決まり字マスター</h1>
-      <p id="selection-summary" class="info-text"></p>
       <div class="button-container">
         <button id="open-study-button" class="action-button action-button--study">
           <span class="action-button-icon" aria-hidden="true">📖</span>
           <span class="action-button-text">決まり字を覚える</span>
         </button>
       </div>
+      <p class="info-text">ここからゴロ合わせを見よう！</p>
       <div class="button-container">
         <button id="start-button" class="action-button action-button--start">
           <span class="action-button-icon" aria-hidden="true">🏁</span>
           <span class="action-button-text">決まり字チェック</span>
         </button>
       </div>
+      <p id="selection-summary" class="info-text"></p>
       <div class="button-container">
         <button id="open-settings-button" class="action-button action-button--settings">
           <span class="action-button-icon" aria-hidden="true">⚙️</span>
-          <span class="action-button-text">使う札の設定</span>
+          <span class="action-button-text">札の設定切り替え</span>
         </button>
       </div>
+      <p class="info-text">向きのランダム表示もできます</p>
       <section class="time-panel">
         <h2 class="time-panel-title">直近の決まり字チェック</h2>
         <ul id="time-history" class="time-history"></ul>
       </section>
-      <p class="offline-note">ブラウザからホーム画面に追加すると、オフラインで利用できます</p>
+      <p class="offline-note">ホーム画面に追加するとオフラインで利用できます</p>
     </main>
 
     <main id="game-screen" class="view hidden" aria-live="polite">
@@ -90,7 +92,7 @@
       <div class="study-floating-bar">
         <button id="study-close-button" class="floating-button" type="button">トップに戻る</button>
       </div>
-      <p class="study-description">札を選んで語呂合わせ画像や歌の情報を確認できます。</p>
+      <p class="study-description">覚えた札は設定オンにしよう！</p>
       <p id="study-list-message" class="study-message">データを読み込んでいます...</p>
       <div id="study-list-container" class="study-list-container" aria-live="off"></div>
     </main>
@@ -137,7 +139,7 @@
     <section id="settings-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
       <div class="modal-content">
         <div class="modal-header">
-          <h2 id="settings-title">使う札の設定</h2>
+          <h2 id="settings-title">覚えた札の設定</h2>
           <button id="close-settings" class="modal-close-button" type="button">完了</button>
         </div>
         <div id="settings-list">

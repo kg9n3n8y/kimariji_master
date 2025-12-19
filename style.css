@@ -66,7 +66,7 @@ h3 {
   width            : 85%;
   border           : 2px solid #336633;
   border-radius    : 8px;
-  padding          : 16px;
+  padding          : 4px 16px 4px;
   background-color : rgba(255, 255, 255, 0.8);
   margin-top       : 16px;
   max-width        : 320px;
@@ -144,7 +144,7 @@ h3 {
 }
 
 .info-text {
-  font-size        : 20px;
+  font-size        : 18px;
   margin           : 0;
   color            : #333333;
 }
@@ -709,7 +709,7 @@ button.individual-setting-button:focus-visible {
 .study-message {
   margin           : 0;
   width            : 100%;
-  font-size        : 18px;
+  font-size        : 20px;
   color            : #333;
 }
 
@@ -807,6 +807,10 @@ button.study-card-button:focus-visible {
   border           : 1px solid #336633;
   border-radius    : 10px;
   padding          : 10px;
+}
+
+.study-detail-info--toggleable {
+  cursor           : pointer;
 }
 
 .study-image-wrapper img {
