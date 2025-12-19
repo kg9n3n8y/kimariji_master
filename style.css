@@ -828,7 +828,8 @@ button.study-card-button:focus-visible {
   padding          : 10px;
 }
 
-.study-detail-info--toggleable {
+.study-detail-info--toggleable,
+.study-image-wrapper--toggleable {
   cursor           : pointer;
 }
 
@@ -838,8 +839,8 @@ button.study-card-button:focus-visible {
 }
 
 .study-detail-kimariji {
-  margin           : 0 0 6px;
-  font-size        : 24px;
+  margin           : 0 0 2px;
+  font-size        : 28px;
   color            : #cc0000;
   font-weight      : bold;
 }

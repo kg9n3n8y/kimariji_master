@@ -89,6 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
     };
     const KIMARIJI_BUTTON_GORO_CLASS = 'action-button--goro';
     const STUDY_DETAIL_INFO_TOGGLE_CLASS = 'study-detail-info--toggleable';
+    const STUDY_IMAGE_TOGGLE_CLASS = 'study-image-wrapper--toggleable';
     let kimarijiButtonState = KIMARIJI_BUTTON_STATE.reveal;
     let currentGoroImagePath = '';
     let currentFudaLabel = '';
@@ -785,6 +786,12 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    if (studyImageWrapper) {
+        studyImageWrapper.addEventListener('click', () => {
+            toggleCurrentStudySelection();
+        });
+    }
+
     updateStudyDetailNavButtons();
 
     if (studyListContainer) {
@@ -879,8 +886,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 studyDetailInfo.classList.remove('is-enabled');
             }
         }
-        if (studyImageWrapper && !hasTarget) {
-            studyImageWrapper.classList.remove('is-enabled');
+        if (studyImageWrapper) {
+            studyImageWrapper.classList.toggle(STUDY_IMAGE_TOGGLE_CLASS, hasTarget);
+            if (!hasTarget) {
+                studyImageWrapper.classList.remove('is-enabled');
+            }
         }
         if (!hasTarget) {
             if (studyDetailSelectionToggle) {
