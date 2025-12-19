@@ -761,6 +761,12 @@ button.study-card-button {
   box-shadow       : 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+button.study-card-button.is-enabled,
+.study-detail-info.is-enabled,
+.study-image-wrapper.is-enabled {
+  background       : linear-gradient(120deg, rgba(227, 244, 232, 0.98), rgba(196, 226, 206, 0.98));
+}
+
 button.study-card-button:hover,
 button.study-card-button:focus-visible {
   border-color     : rgba(47, 111, 237, 0.4);
@@ -784,7 +790,7 @@ button.study-card-button:focus-visible {
 }
 
 .study-card-kimariji {
-  font-size        : 24px;
+  font-size        : 20px;
   font-weight      : bold;
   color            : #cc0000;
 }
@@ -841,7 +847,7 @@ button.study-card-button:focus-visible {
   border           : none;
   border-radius    : var(--button-radius);
   padding          : 8px 18px;
-  font-size        : 16px;
+  font-size        : 14px;
   width            : auto;
   color            : #ffffff;
   font-weight      : bold;

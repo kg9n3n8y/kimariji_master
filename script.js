@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const studyListContainer = document.getElementById('study-list-container');
     const studyListMessage = document.getElementById('study-list-message');
     const studyDetailImage = document.getElementById('study-detail-image');
+    const studyImageWrapper = document.querySelector('.study-image-wrapper');
     const studyDetailKimariji = document.getElementById('study-detail-kimariji');
     const studyDetailUpper = document.getElementById('study-detail-upper');
     const studyDetailLower = document.getElementById('study-detail-lower');
@@ -469,6 +470,7 @@ document.addEventListener("DOMContentLoaded", function() {
         syncSettingsUI();
         updateSelectionSummary();
         updateStudyDetailSelectionToggle();
+        syncStudyCardButtons();
     }
 
     function updateSelectionSummary() {
@@ -873,21 +875,52 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (studyDetailInfo) {
             studyDetailInfo.classList.toggle(STUDY_DETAIL_INFO_TOGGLE_CLASS, hasTarget);
+            if (!hasTarget) {
+                studyDetailInfo.classList.remove('is-enabled');
+            }
         }
-        if (!studyDetailSelectionToggle) {
-            return;
+        if (studyImageWrapper && !hasTarget) {
+            studyImageWrapper.classList.remove('is-enabled');
         }
-        studyDetailSelectionToggle.disabled = !hasTarget;
         if (!hasTarget) {
-            studyDetailSelectionToggle.classList.remove('off');
-            studyDetailSelectionToggle.textContent = '設定オン';
-            studyDetailSelectionToggle.setAttribute('aria-pressed', 'true');
+            if (studyDetailSelectionToggle) {
+                studyDetailSelectionToggle.disabled = true;
+                studyDetailSelectionToggle.classList.remove('off');
+                studyDetailSelectionToggle.textContent = '設定オン';
+                studyDetailSelectionToggle.setAttribute('aria-pressed', 'true');
+            }
             return;
         }
+
         const isActive = isFudaEnabledByNo(currentItem.fudaNo);
-        studyDetailSelectionToggle.classList.toggle('off', !isActive);
-        studyDetailSelectionToggle.textContent = isActive ? '設定オン' : '設定オフ';
-        studyDetailSelectionToggle.setAttribute('aria-pressed', String(isActive));
+        if (studyDetailSelectionToggle) {
+            studyDetailSelectionToggle.disabled = false;
+            studyDetailSelectionToggle.classList.toggle('off', !isActive);
+            studyDetailSelectionToggle.textContent = isActive ? '設定オン' : '設定オフ';
+            studyDetailSelectionToggle.setAttribute('aria-pressed', String(isActive));
+        }
+        if (studyDetailInfo) {
+            studyDetailInfo.classList.toggle('is-enabled', isActive);
+        }
+        if (studyImageWrapper) {
+            studyImageWrapper.classList.toggle('is-enabled', isActive);
+        }
+    }
+
+    function syncStudyCardButtons() {
+        if (!studyListContainer) {
+            return;
+        }
+        const buttons = studyListContainer.querySelectorAll('.study-card-button');
+        buttons.forEach(button => {
+            const fudaNo = button.dataset.fudaNo;
+            if (!fudaNo) {
+                button.classList.remove('is-enabled');
+                return;
+            }
+            const isActive = isFudaEnabledByNo(fudaNo);
+            button.classList.toggle('is-enabled', isActive);
+        });
     }
 
     function toggleCurrentStudySelection() {
@@ -968,6 +1001,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 button.type = 'button';
                 button.className = 'study-card-button';
                 button.dataset.studyId = item.id;
+                if (Number.isFinite(item.fudaNo)) {
+                    button.dataset.fudaNo = String(item.fudaNo);
+                    button.classList.toggle('is-enabled', isFudaEnabledByNo(item.fudaNo));
+                }
 
                 const img = document.createElement('img');
                 img.src = item.thumbnail || PLACEHOLDER_IMAGE;
