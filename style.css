@@ -86,6 +86,19 @@ h3 {
   opacity          : 0.85;
 }
 
+.author-credit {
+  font-size        : 12px;
+  color            : #444444;
+  margin           : 4px 0 0;
+  opacity          : 0.8;
+}
+
+.author-credit a {
+  color            : #2f6fed;
+  text-decoration  : underline;
+  text-underline-offset: 3px;
+}
+
 .time-history {
   list-style       : none;
   width            : 100%;
