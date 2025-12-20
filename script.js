@@ -682,14 +682,20 @@ document.addEventListener("DOMContentLoaded", function() {
     if (enableAllButton) {
         enableAllButton.addEventListener('click', () => {
             setAllFudaStates(true);
+            reverseEnabled = true;
+            saveReverseSetting();
             handleSelectionStateChanged();
+            syncReverseToggle();
         });
     }
 
     if (disableAllButton) {
         disableAllButton.addEventListener('click', () => {
             setAllFudaStates(false);
+            reverseEnabled = false;
+            saveReverseSetting();
             handleSelectionStateChanged();
+            syncReverseToggle();
         });
     }
 
