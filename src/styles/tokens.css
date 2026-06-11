@@ -1,0 +1,24 @@
+:root {
+  --color-primary: #336633;
+  --color-primary-light: #4a8a4a;
+  --color-primary-dark: #224422;
+  --color-bg: #e1dac3;
+  --color-surface: #fffcf5;
+  --color-surface-elevated: #ffffff;
+  --color-kimariji: #c62828;
+  --color-correct: #2e7d32;
+  --color-incorrect: #c62828;
+  --color-accent-blue: #2f6fed;
+  --color-accent-orange: #e65100;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #5c5c5c;
+  --radius-pill: 999px;
+  --radius-card: 16px;
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --font-base: 'Hiragino Maru Gothic ProN', 'Hiragino Sans', 'Noto Sans JP',
+    sans-serif;
+  --max-width-narrow: 420px;
+  --max-width-wide: 960px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}

@@ -1,0 +1,14 @@
+.shell {
+  min-height: 100vh;
+  padding:
+    calc(16px + var(--safe-top))
+    12px
+    calc(24px + var(--safe-bottom));
+  display: flex;
+  justify-content: center;
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--max-width-wide);
+}
