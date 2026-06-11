@@ -1,0 +1,50 @@
+.page {
+  max-width: var(--max-width-narrow);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+  padding: 32px 8px 24px;
+}
+
+.title {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.4;
+  color: var(--color-primary-dark);
+}
+
+.detail {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.detail strong {
+  font-size: 32px;
+  color: #4a5fc1;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  border-radius: var(--radius-pill);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.primary {
+  background: linear-gradient(130deg, #4a5fc1, #6f88e8);
+  color: #fff;
+}
+
+.secondary {
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-primary);
+  border: 1px solid rgba(51, 102, 51, 0.2);
+}

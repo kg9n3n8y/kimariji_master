@@ -15,6 +15,8 @@ export type Fuda = {
 export type QuizQuestion = {
   correct: Fuda;
   choices: Fuda[];
+  /** 取り札画像を逆向きで表示する選択肢（1分間確認など） */
+  reversedNos?: ReadonlySet<number>;
 };
 
 export type OneMinuteHistoryEntry = {

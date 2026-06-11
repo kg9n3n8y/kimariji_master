@@ -9,10 +9,14 @@ function defaultLearnedState(): Record<string, boolean> {
   return defaults;
 }
 
-function letterToFudaNos(letter: string): string[] {
+export function getFudaNosForLetter(letter: string): number[] {
   return fudalist
     .filter((f) => (f.kimariji || '').charAt(0) === letter)
-    .map((f) => String(f.no));
+    .map((f) => f.no);
+}
+
+function letterToFudaNos(letter: string): string[] {
+  return getFudaNosForLetter(letter).map(String);
 }
 
 export function loadLearnedState(): Record<string, boolean> {
@@ -87,4 +91,44 @@ export function getLearnedFuda(state: Record<string, boolean>) {
 
 export function getUnlearnedFuda(state: Record<string, boolean>) {
   return fudalist.filter((f) => !isLearned(state, f.no));
+}
+
+export function isLetterFullyLearned(
+  state: Record<string, boolean>,
+  letter: string,
+): boolean {
+  const targets = getFudaNosForLetter(letter);
+  return targets.length > 0 && targets.every((no) => isLearned(state, no));
+}
+
+export function areLettersFullyLearned(
+  state: Record<string, boolean>,
+  letters: string[],
+): boolean {
+  return letters.every((letter) => isLetterFullyLearned(state, letter));
+}
+
+export function applyLearnedToLetters(
+  state: Record<string, boolean>,
+  letters: string[],
+  learned: boolean,
+): Record<string, boolean> {
+  let next = state;
+  for (const letter of letters) {
+    for (const fudaNo of getFudaNosForLetter(letter)) {
+      next = setLearned(next, fudaNo, learned);
+    }
+  }
+  return next;
+}
+
+export function setAllLearnedState(
+  state: Record<string, boolean>,
+  learned: boolean,
+): Record<string, boolean> {
+  const next = { ...state };
+  for (const fuda of fudalist) {
+    next[String(fuda.no)] = learned;
+  }
+  return next;
 }

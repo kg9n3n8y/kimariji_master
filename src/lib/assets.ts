@@ -8,6 +8,14 @@ export function fudaImageUrl(fuda: { normal: string }): string {
   return assetUrl(fuda.normal);
 }
 
+export function fudaReverseImageUrl(fuda: { reverse: string }): string {
+  return assetUrl(fuda.reverse);
+}
+
+export function placeholderFudaUrl(): string {
+  return assetUrl('torifuda/tori_0.png');
+}
+
 export function goroSlideUrl(goroImage: string): string {
   return assetUrl(`goro_slide/${goroImage}`);
 }

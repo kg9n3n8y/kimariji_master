@@ -1,0 +1,105 @@
+.page {
+  max-width: var(--max-width-narrow);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+}
+
+.message {
+  color: var(--color-text-secondary);
+}
+
+.scoreCard {
+  background: var(--color-surface);
+  border: 1px solid rgba(51, 102, 51, 0.25);
+  border-radius: var(--radius-card);
+  padding: 20px 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.score {
+  margin: 0;
+  font-size: 36px;
+  font-weight: bold;
+  color: var(--color-primary-dark);
+}
+
+.learned {
+  margin: 8px 0 0;
+  font-size: 16px;
+  color: var(--color-correct);
+  font-weight: bold;
+}
+
+.missSection {
+  text-align: left;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.subtitle {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.missList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.missItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: bold;
+  color: var(--color-kimariji);
+}
+
+.missMeta {
+  color: var(--color-text-secondary);
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: bold;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.primary {
+  background: linear-gradient(130deg, #2f6fed, #4f9dff);
+  color: #fff;
+}
+
+.secondary {
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-text-primary);
+  border: 1px solid rgba(51, 102, 51, 0.2);
+}

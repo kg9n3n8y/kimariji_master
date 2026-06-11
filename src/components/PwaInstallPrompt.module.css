@@ -1,0 +1,98 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  border: none;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 90;
+  cursor: pointer;
+}
+
+.sheetWrap {
+  position: fixed;
+  inset: 0;
+  z-index: 91;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px;
+  padding-bottom: calc(12px + var(--safe-bottom));
+  pointer-events: none;
+}
+
+.sheet {
+  width: min(100%, 420px);
+  margin: 0;
+  padding: 20px 18px 16px;
+  border: none;
+  border-radius: 20px 20px 16px 16px;
+  background: var(--color-surface);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  animation: sheetSlideUp 0.28s ease;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--color-text-primary);
+}
+
+.lead {
+  margin: 0 0 14px;
+  font-size: 15px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.steps {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  font-size: 15px;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--color-text-primary);
+  white-space: pre-line;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.primary,
+.secondary {
+  min-height: 48px;
+  border-radius: var(--radius-pill);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.primary {
+  border: none;
+  background: linear-gradient(130deg, var(--color-primary), #5dc08e);
+  color: #fff;
+}
+
+.secondary {
+  border: 1px solid rgba(51, 102, 51, 0.25);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+}
+
+@keyframes sheetSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

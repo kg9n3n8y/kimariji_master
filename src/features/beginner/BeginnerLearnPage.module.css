@@ -1,0 +1,124 @@
+.page {
+  max-width: var(--max-width-wide);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.slide {
+  background: var(--color-surface);
+  border: 1px solid rgba(51, 102, 51, 0.25);
+  border-radius: var(--radius-card);
+  padding: 10px;
+  box-shadow: var(--shadow-card);
+}
+
+.slideImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+}
+
+.info {
+  background: var(--color-surface);
+  border: 1px solid rgba(51, 102, 51, 0.25);
+  border-radius: var(--radius-card);
+  padding: 14px 16px;
+}
+
+.kimariji {
+  margin: 0 0 8px;
+  font-size: 32px;
+  color: var(--color-kimariji);
+}
+
+.verse {
+  margin: 0 0 6px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.meta {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.navButton {
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(130deg, #536853, #6f8770);
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.navButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.nextButton {
+  flex: 1;
+  max-width: 280px;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 14px 20px;
+  background: linear-gradient(130deg, #2f6fed, #4f9dff);
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+}
+
+.quit {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+@media (min-width: 720px) {
+  .page {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'header header'
+      'slide info'
+      'nav nav'
+      'quit quit';
+    align-items: start;
+  }
+
+  .page > :first-child {
+    grid-area: header;
+  }
+
+  .slide {
+    grid-area: slide;
+  }
+
+  .info {
+    grid-area: info;
+  }
+
+  .nav {
+    grid-area: nav;
+  }
+
+  .quit {
+    grid-area: quit;
+  }
+}

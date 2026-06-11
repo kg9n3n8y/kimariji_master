@@ -1,0 +1,121 @@
+.page {
+  max-width: var(--max-width-narrow);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.back {
+  border: none;
+  background: transparent;
+  color: var(--color-accent-blue);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px 0;
+  min-height: 44px;
+}
+
+.score {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--color-primary-dark);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.streakSlot {
+  margin-left: auto;
+  min-width: 7.5em;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.streak {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--color-accent-orange);
+  white-space: nowrap;
+  animation: streakPop 0.25s ease;
+}
+
+@keyframes streakPop {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.timer {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--color-accent-orange);
+}
+
+.timerUrgent {
+  color: var(--color-incorrect);
+  animation: timerPulse 0.8s ease-in-out infinite;
+}
+
+.error {
+  margin: 0;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.countdownScreen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: min(52vh, 420px);
+  margin-top: 8px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+}
+
+.countdownNumber {
+  font-size: clamp(96px, 28vw, 140px);
+  font-weight: bold;
+  line-height: 1;
+  color: var(--color-accent-orange);
+  text-shadow: 0 4px 20px rgba(212, 107, 67, 0.25);
+  animation: countdownPop 0.45s ease-out;
+}
+
+@keyframes countdownPop {
+  0% {
+    opacity: 0.35;
+    transform: scale(0.82);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes timerPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}
