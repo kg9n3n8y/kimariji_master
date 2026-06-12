@@ -1,5 +1,6 @@
 import type { Fuda, QuizQuestion } from '@/types/fuda';
 import { fudaImageUrl, fudaReverseImageUrl } from '@/lib/assets';
+import { preloadImages } from '@/lib/preloadImages';
 import { shuffleArray } from '@/lib/shuffle';
 
 /** 歌番号で重複を除く（プールに同一札が複数含まれる場合のガード） */
@@ -106,6 +107,16 @@ export function quizChoiceImageUrl(
     return fudaReverseImageUrl(fuda);
   }
   return fudaImageUrl(fuda);
+}
+
+export function getQuizChoiceImageUrls(question: QuizQuestion): string[] {
+  return question.choices.map((fuda) => quizChoiceImageUrl(fuda, question));
+}
+
+export async function preloadQuizQuestionImages(
+  question: QuizQuestion,
+): Promise<void> {
+  await preloadImages(getQuizChoiceImageUrls(question));
 }
 
 /** 1分間確認モード: 覚えた札から正解1枚 + 覚えた札プールからダミー3枚 */

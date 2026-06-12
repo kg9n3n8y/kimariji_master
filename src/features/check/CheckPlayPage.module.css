@@ -23,11 +23,6 @@
   width: fit-content;
   max-width: 100%;
   display: block;
-  transition: transform 0.15s ease;
-}
-
-.imageButton:hover {
-  transform: translateY(-3px);
 }
 
 .fudaImage {
@@ -41,15 +36,6 @@
   box-shadow:
     0 20px 40px -10px rgba(0, 0, 0, 0.28),
     0 8px 16px -6px rgba(0, 0, 0, 0.14);
-  transition:
-    box-shadow 0.15s ease,
-    transform 0.15s ease;
-}
-
-.imageButton:hover .fudaImage {
-  box-shadow:
-    0 28px 48px -12px rgba(0, 0, 0, 0.32),
-    0 12px 20px -8px rgba(0, 0, 0, 0.16);
 }
 
 .kimariji {

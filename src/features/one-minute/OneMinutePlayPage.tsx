@@ -3,7 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import type { Fuda, QuizQuestion } from '@/types/fuda';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { BackNavButton } from '@/components/BackNavButton';
-import { buildOneMinuteQuestion, quizChoiceImageUrl } from '@/lib/quiz';
+import {
+  buildOneMinuteQuestion,
+  preloadQuizQuestionImages,
+  quizChoiceImageUrl,
+} from '@/lib/quiz';
 import {
   playCorrectSound,
   playIncorrectSound,
@@ -50,12 +54,15 @@ export function OneMinutePlayPage() {
   );
 
   const [question, setQuestion] = useState<QuizQuestion | null>(null);
+  const [choicesReady, setChoicesReady] = useState(false);
   const [selectedNo, setSelectedNo] = useState<number | null>(null);
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
   const [exitConfirmOpen, setExitConfirmOpen] = useState(false);
 
   const endedRef = useRef(false);
   const pendingEndRef = useRef(false);
+  const firstQuestionRef = useRef<QuizQuestion | null>(null);
+  const pendingNextQuestionRef = useRef<QuizQuestion | null>(null);
   const phaseRef = useRef<Phase>(phase);
   const scoreRef = useRef(0);
   const streakRef = useRef(0);
@@ -89,16 +96,43 @@ export function OneMinutePlayPage() {
     navigate('/one-minute/result', { replace: true });
   }, [navigate]);
 
-  const startPlaying = useCallback(() => {
-    const first = buildQuestion();
+  const prepareQuestion = useCallback(
+    async (next: QuizQuestion, options?: { showLoading?: boolean }) => {
+      if (options?.showLoading !== false) {
+        setChoicesReady(false);
+      }
+      await preloadQuizQuestionImages(next);
+      setQuestion(next);
+      setChoicesReady(true);
+    },
+    [],
+  );
+
+  const startPlaying = useCallback(async () => {
+    const first = firstQuestionRef.current ?? buildQuestion();
+    firstQuestionRef.current = null;
     if (!first) {
       endedRef.current = true;
       navigate('/', { replace: true });
       return;
     }
-    setQuestion(first);
+    await prepareQuestion(first, { showLoading: false });
     setGamePhase('playing');
-  }, [buildQuestion, navigate]);
+  }, [buildQuestion, navigate, prepareQuestion]);
+
+  useEffect(() => {
+    if (gamePhase !== 'countdown') {
+      return;
+    }
+
+    const first = buildQuestion();
+    if (!first) {
+      return;
+    }
+
+    firstQuestionRef.current = first;
+    void preloadQuizQuestionImages(first);
+  }, [buildQuestion, gamePhase]);
 
   useEffect(() => {
     if (gamePhase !== 'countdown') {
@@ -140,22 +174,23 @@ export function OneMinutePlayPage() {
     return () => window.clearInterval(id);
   }, [finishGame, gamePhase]);
 
-  const advanceAfterFeedback = useCallback(() => {
+  const advanceAfterFeedback = useCallback(async () => {
     if (endedRef.current || pendingEndRef.current) {
       finishGame();
       return;
     }
 
-    const next = buildQuestion();
+    const next = pendingNextQuestionRef.current ?? buildQuestion();
+    pendingNextQuestionRef.current = null;
     if (!next) {
       finishGame();
       return;
     }
 
-    setQuestion(next);
+    await prepareQuestion(next, { showLoading: false });
     setPhase('answering');
     setSelectedNo(null);
-  }, [buildQuestion, finishGame]);
+  }, [buildQuestion, finishGame, prepareQuestion]);
 
   const handleBack = () => {
     setExitConfirmOpen(true);
@@ -183,6 +218,12 @@ export function OneMinutePlayPage() {
     setIsCorrectAnswer(isCorrect);
     setPhase('feedback');
 
+    const next = buildQuestion();
+    if (next) {
+      pendingNextQuestionRef.current = next;
+      void preloadQuizQuestionImages(next);
+    }
+
     if (isCorrect) {
       playCorrectSound();
       streakRef.current += 1;
@@ -195,7 +236,9 @@ export function OneMinutePlayPage() {
       setStreak(0);
     }
 
-    window.setTimeout(advanceAfterFeedback, FEEDBACK_MS);
+    window.setTimeout(() => {
+      void advanceAfterFeedback();
+    }, FEEDBACK_MS);
   };
 
   if (gamePhase === 'countdown') {
@@ -260,8 +303,12 @@ export function OneMinutePlayPage() {
 
           <h2 className={quizStyles.kimariji}>{question.correct.kimariji}</h2>
 
-          <div className={quizStyles.grid}>
-            {question.choices.map((fuda) => {
+          {!choicesReady ?
+            <p className={quizStyles.preparingChoices} aria-live="polite">
+              札を準備中…
+            </p>
+          : <div className={quizStyles.grid}>
+              {question.choices.map((fuda) => {
               const isSelected = selectedNo === fuda.no;
               const isCorrectCard = fuda.no === question.correct.no;
               const showCorrectHighlight =
@@ -291,8 +338,9 @@ export function OneMinutePlayPage() {
                   />
                 </button>
               );
-            })}
-          </div>
+              })}
+            </div>
+          }
         </div>
 
         {phase === 'feedback' && (

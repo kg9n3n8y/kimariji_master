@@ -9,7 +9,8 @@ import {
   ProgressBadge,
   type ProgressBadgeTheme,
 } from '@/components/ProgressBadge';
-import { fudaImageUrl, goroSlideUrl } from '@/lib/assets';
+import { goroSlideUrl } from '@/lib/assets';
+import { preloadQuizQuestionImages, quizChoiceImageUrl } from '@/lib/quiz';
 import {
   playCorrectSound,
   playIncorrectSound,
@@ -69,6 +70,7 @@ export function QuizPlayer({
   const [pendingRecord, setPendingRecord] = useState<QuizAnswerRecord | null>(
     null,
   );
+  const [choicesReady, setChoicesReady] = useState(false);
 
   const current = questions[index];
   const correctCount = records.filter((r) => r.isCorrect).length;
@@ -86,6 +88,41 @@ export function QuizPlayer({
       );
     };
   }, []);
+
+  useEffect(() => {
+    if (questions.length === 0) {
+      return;
+    }
+
+    void preloadQuizQuestionImages(questions[0]!);
+    if (questions.length > 1) {
+      void preloadQuizQuestionImages(questions[1]!);
+    }
+  }, [questions]);
+
+  useEffect(() => {
+    if (!current) {
+      return;
+    }
+
+    let cancelled = false;
+    setChoicesReady(false);
+
+    void preloadQuizQuestionImages(current).then(() => {
+      if (!cancelled) {
+        setChoicesReady(true);
+      }
+    });
+
+    const nextQuestion = questions[index + 1];
+    if (nextQuestion) {
+      void preloadQuizQuestionImages(nextQuestion);
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [current, index, questions]);
 
   const goToNextQuestion = useCallback(
     (nextRecords: QuizAnswerRecord[]) => {
@@ -204,40 +241,45 @@ export function QuizPlayer({
         <div className={styles.quizStage}>
           <h2 className={styles.kimariji}>{current.correct.kimariji}</h2>
 
-          <div className={styles.grid}>
-            {current.choices.map((fuda) => {
-              const isSelected = selectedNo === fuda.no;
-              const isCorrectCard = fuda.no === current.correct.no;
+          {!choicesReady ?
+            <p className={styles.preparingChoices} aria-live="polite">
+              札を準備中…
+            </p>
+          : <div className={styles.grid}>
+              {current.choices.map((fuda) => {
+                const isSelected = selectedNo === fuda.no;
+                const isCorrectCard = fuda.no === current.correct.no;
 
-              const showCorrectHighlight =
-                phase !== 'answering' && isCorrectCard;
-              const showWrongHighlight =
-                phase !== 'answering' && isSelected && !isCorrectAnswer;
+                const showCorrectHighlight =
+                  phase !== 'answering' && isCorrectCard;
+                const showWrongHighlight =
+                  phase !== 'answering' && isSelected && !isCorrectAnswer;
 
-              return (
-                <button
-                  key={`${index}-${fuda.no}`}
-                  type="button"
-                  className={[
-                    styles.choice,
-                    showCorrectHighlight ? styles.choiceCorrect : '',
-                    showWrongHighlight ? styles.choiceWrong : '',
-                    phase !== 'answering' ? styles.choiceLocked : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
-                  onClick={() => handleSelect(fuda)}
-                  disabled={phase !== 'answering'}
-                >
-                  <img
-                    src={fudaImageUrl(fuda)}
-                    alt={`取り札 ${fuda.no}番`}
-                    draggable={false}
-                  />
-                </button>
-              );
-            })}
-          </div>
+                return (
+                  <button
+                    key={`${index}-${fuda.no}`}
+                    type="button"
+                    className={[
+                      styles.choice,
+                      showCorrectHighlight ? styles.choiceCorrect : '',
+                      showWrongHighlight ? styles.choiceWrong : '',
+                      phase !== 'answering' ? styles.choiceLocked : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                    onClick={() => handleSelect(fuda)}
+                    disabled={phase !== 'answering'}
+                  >
+                    <img
+                      src={quizChoiceImageUrl(fuda, current)}
+                      alt={`取り札 ${fuda.no}番`}
+                      draggable={false}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          }
         </div>
       )}
 
