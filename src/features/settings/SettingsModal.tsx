@@ -199,14 +199,14 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
               className={`${styles.footerButton} ${styles.footerButtonPrimary}`}
               onClick={handleEnableAll}
             >
-              すべてオン
+              全てオン
             </button>
             <button
               type="button"
               className={`${styles.footerButton} ${styles.footerButtonDanger}`}
               onClick={handleDisableAll}
             >
-              すべてオフ
+              全てオフ
             </button>
           </footer>
         </div>

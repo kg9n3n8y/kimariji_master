@@ -1,7 +1,6 @@
 .card {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 12px;
   padding: 12px;
   margin-bottom: 16px;
@@ -14,7 +13,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 0;
+  width: 100%;
 }
 
 .title {
@@ -59,17 +58,16 @@
 }
 
 .button {
-  flex-shrink: 0;
-  min-height: 40px;
+  width: 100%;
+  min-height: 44px;
   padding: 0 14px;
   border: none;
   border-radius: var(--radius-pill);
   background: linear-gradient(130deg, var(--color-primary), #5dc08e);
   color: #fff;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
   cursor: pointer;
-  white-space: nowrap;
 }
 
 .button:disabled {
