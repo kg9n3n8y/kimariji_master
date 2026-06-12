@@ -47,7 +47,27 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,mp3,ogg,wav}'],
-        navigateFallback: 'index.html',
+        navigateFallback: '/kimariji_master/index.html',
+        navigateFallbackDenylist: [/^\/api\//],
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
+        runtimeCaching: [
+          {
+            urlPattern: /\/kimariji_master\/(torifuda|goro_slide|goro_thumbnail)\/.+\.(?:png|webp)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'kimariji-images',
+              expiration: {
+                maxEntries: 512,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+        ],
       },
       devOptions: {
         enabled: false,

@@ -7,4 +7,5 @@ export const STORAGE_KEYS = {
   pwaInstallPromptSeen: 'kimariji:pwaInstallPromptSeen',
   soundEnabled: 'kimariji:soundEnabled',
   learnedAt: 'kimariji:learnedAt',
+  assetPrecacheVersion: 'kimariji:assetPrecacheVersion',
 } as const;

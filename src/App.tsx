@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { AppShell } from '@/components/AppShell';
+import { AssetPrecacheGate } from '@/components/AssetPrecacheGate';
 import { PwaInstallPrompt } from '@/components/PwaInstallPrompt';
 import { UpdatePrompt } from '@/components/UpdatePrompt';
 import { LearnedProvider } from '@/stores/LearnedContext';
@@ -12,17 +13,19 @@ import { StudyRoutes } from '@/features/study/StudyRoutes';
 export default function App() {
   return (
     <LearnedProvider>
-      <AppShell>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/beginner/*" element={<BeginnerRoutes />} />
-          <Route path="/one-minute/*" element={<OneMinuteRoutes />} />
-          <Route path="/check/*" element={<CheckRoutes />} />
-          <Route path="/study/*" element={<StudyRoutes />} />
-        </Routes>
-        <PwaInstallPrompt />
-        <UpdatePrompt />
-      </AppShell>
+      <AssetPrecacheGate>
+        <AppShell>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/beginner/*" element={<BeginnerRoutes />} />
+            <Route path="/one-minute/*" element={<OneMinuteRoutes />} />
+            <Route path="/check/*" element={<CheckRoutes />} />
+            <Route path="/study/*" element={<StudyRoutes />} />
+          </Routes>
+          <PwaInstallPrompt />
+          <UpdatePrompt />
+        </AppShell>
+      </AssetPrecacheGate>
     </LearnedProvider>
   );
 }
