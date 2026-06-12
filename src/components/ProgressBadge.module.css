@@ -1,0 +1,37 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 15px;
+  font-weight: bold;
+  border: 2px solid transparent;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.main {
+  background: linear-gradient(135deg, #dcefe0, #b8dfc4);
+  border-color: #3d8f55;
+  color: #1e5c32;
+}
+
+.review {
+  background: linear-gradient(135deg, #dde3f8, #c2ccf0);
+  border-color: #4a5fc1;
+  color: #2a3d8f;
+}
+
+.retest {
+  background: linear-gradient(135deg, #fde8dc, #f5c9a8);
+  border-color: #d46b43;
+  color: #9a4518;
+}
+
+.learn {
+  background: linear-gradient(135deg, #ececec, #d4d4d4);
+  border-color: #8a8a8a;
+  color: #444;
+}

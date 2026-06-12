@@ -15,13 +15,6 @@
   min-height: 44px;
 }
 
-.backLink {
-  color: var(--color-accent-blue);
-  font-weight: bold;
-  text-decoration: none;
-  font-size: 16px;
-}
-
 .position {
   font-size: 15px;
   font-weight: bold;

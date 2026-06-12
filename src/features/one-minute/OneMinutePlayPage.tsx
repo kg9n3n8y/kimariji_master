@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Fuda, QuizQuestion } from '@/types/fuda';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { BackNavButton } from '@/components/BackNavButton';
 import { buildOneMinuteQuestion, quizChoiceImageUrl } from '@/lib/quiz';
 import {
   playCorrectSound,
@@ -201,9 +202,7 @@ export function OneMinutePlayPage() {
     return (
       <section className={styles.page}>
         <header className={styles.header}>
-          <button type="button" className={styles.back} onClick={handleBack}>
-            ← トップ
-          </button>
+          <BackNavButton label="トップ" onClick={handleBack} />
         </header>
 
         <div className={styles.countdownScreen} aria-live="assertive">
@@ -235,63 +234,65 @@ export function OneMinutePlayPage() {
   return (
     <section className={styles.page}>
       <header className={styles.header}>
-        <button type="button" className={styles.back} onClick={handleBack}>
-          ← トップ
-        </button>
+        <BackNavButton label="トップ" onClick={handleBack} />
         <div className={styles.score}>{score}点</div>
       </header>
 
-      <div className={quizStyles.player}>
-        <div className={quizStyles.header}>
-          <div
-            className={`${styles.timer} ${timerUrgent ? styles.timerUrgent : ''}`}
-            aria-live="polite"
-          >
-            残り {secondsLeft}秒
+      <div
+        className={`${quizStyles.player} ${quizStyles.playerViewportFit} ${styles.quizPlayer}`}
+      >
+        <div className={quizStyles.quizStage}>
+          <div className={quizStyles.header}>
+            <div
+              className={`${styles.timer} ${timerUrgent ? styles.timerUrgent : ''}`}
+              aria-live="polite"
+            >
+              残り {secondsLeft}秒
+            </div>
+            <div className={styles.streakSlot} aria-live="polite">
+              {streak >= 2 && (
+                <span key={streak} className={styles.streak}>
+                  {streak}連続正解！
+                </span>
+              )}
+            </div>
           </div>
-          <div className={styles.streakSlot} aria-live="polite">
-            {streak >= 2 && (
-              <span key={streak} className={styles.streak}>
-                {streak}連続正解！
-              </span>
-            )}
+
+          <h2 className={quizStyles.kimariji}>{question.correct.kimariji}</h2>
+
+          <div className={quizStyles.grid}>
+            {question.choices.map((fuda) => {
+              const isSelected = selectedNo === fuda.no;
+              const isCorrectCard = fuda.no === question.correct.no;
+              const showCorrectHighlight =
+                phase === 'feedback' && isCorrectCard;
+              const showWrongHighlight =
+                phase === 'feedback' && isSelected && !isCorrectAnswer;
+
+              return (
+                <button
+                  key={fuda.no}
+                  type="button"
+                  className={[
+                    quizStyles.choice,
+                    showCorrectHighlight ? quizStyles.choiceCorrect : '',
+                    showWrongHighlight ? quizStyles.choiceWrong : '',
+                    phase === 'feedback' ? quizStyles.choiceLocked : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  onClick={() => handleSelect(fuda)}
+                  disabled={phase === 'feedback'}
+                >
+                  <img
+                    src={quizChoiceImageUrl(fuda, question)}
+                    alt={`取り札 ${fuda.no}番`}
+                    draggable={false}
+                  />
+                </button>
+              );
+            })}
           </div>
-        </div>
-
-        <h2 className={quizStyles.kimariji}>{question.correct.kimariji}</h2>
-
-        <div className={quizStyles.grid}>
-          {question.choices.map((fuda) => {
-            const isSelected = selectedNo === fuda.no;
-            const isCorrectCard = fuda.no === question.correct.no;
-            const showCorrectHighlight =
-              phase === 'feedback' && isCorrectCard;
-            const showWrongHighlight =
-              phase === 'feedback' && isSelected && !isCorrectAnswer;
-
-            return (
-              <button
-                key={fuda.no}
-                type="button"
-                className={[
-                  quizStyles.choice,
-                  showCorrectHighlight ? quizStyles.choiceCorrect : '',
-                  showWrongHighlight ? quizStyles.choiceWrong : '',
-                  phase === 'feedback' ? quizStyles.choiceLocked : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-                onClick={() => handleSelect(fuda)}
-                disabled={phase === 'feedback'}
-              >
-                <img
-                  src={quizChoiceImageUrl(fuda, question)}
-                  alt={`取り札 ${fuda.no}番`}
-                  draggable={false}
-                />
-              </button>
-            );
-          })}
         </div>
 
         {phase === 'feedback' && (

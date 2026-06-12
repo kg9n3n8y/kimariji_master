@@ -5,16 +5,3 @@
   gap: 12px;
   margin-bottom: 8px;
 }
-
-.back {
-  color: var(--color-accent-blue);
-  font-weight: bold;
-  text-decoration: none;
-  font-size: 16px;
-}
-
-.progress {
-  font-size: 16px;
-  font-weight: bold;
-  color: var(--color-text-secondary);
-}

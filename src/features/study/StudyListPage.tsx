@@ -58,7 +58,6 @@ export function StudyListPage() {
     <section className={styles.page}>
       <header ref={stickyHeaderRef} className={styles.stickyHeader}>
         <PageHeader backTo="/" />
-        <h1 className={styles.title}>選んで学ぶ</h1>
 
         <div className={styles.filters} role="tablist" aria-label="表示フィルター">
           {filters.map((item) => (

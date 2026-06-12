@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { BackNavButton } from '@/components/BackNavButton';
 import { goroSlideUrl } from '@/lib/assets';
 import {
   findStudyIndex,
@@ -32,9 +33,7 @@ export function StudyDetailPage() {
   return (
     <section className={styles.page}>
       <header className={styles.header}>
-        <Link className={styles.backLink} to="/study">
-          ← 選んで学ぶ
-        </Link>
+        <BackNavButton to="/study" label="選んで学ぶ" />
         <span className={styles.position}>
           {index + 1} / {TOTAL_FUDA}
         </span>

@@ -9,6 +9,7 @@ import {
   loadOneMinuteBest,
   ONE_MINUTE_MIN_LEARNED,
 } from '@/features/one-minute/oneMinuteStorage';
+import { HowToModal } from '@/features/home/HowToModal';
 import { SettingsModal } from '@/features/settings/SettingsModal';
 import { useLearned } from '@/stores/LearnedContext';
 import styles from '@/features/home/HomePage.module.css';
@@ -21,6 +22,7 @@ export function HomePage() {
   const { learnedCount } = useLearned();
 
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [howToOpen, setHowToOpen] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
   const copyFeedbackTimerRef = useRef<number | null>(null);
   const [celebration] = useState<BeginnerTestHomeState | null>(
@@ -100,18 +102,6 @@ export function HomePage() {
             )}
           </p>
         </div>
-        <button
-          type="button"
-          className={styles.settingsButton}
-          aria-haspopup="dialog"
-          aria-expanded={settingsOpen}
-          onClick={() => setSettingsOpen(true)}
-        >
-          <span className={styles.settingsIcon} aria-hidden="true">
-            ⚙️
-          </span>
-          設定
-        </button>
       </header>
 
       <div className={styles.progressBar} aria-hidden="true">
@@ -130,7 +120,7 @@ export function HomePage() {
             🌱
           </span>
           <span className={styles.cardTitle}>
-            {allLearned ? 'おてがる復習モード' : '初心者モード'}
+            {allLearned ? 'おてがる復習' : '初心者モード'}
           </span>
           <span className={styles.cardCaption}>
             {allLearned ? '5首の復習テスト' : '5首ずつ覚えてテスト'}
@@ -167,7 +157,7 @@ export function HomePage() {
             <span className={styles.cardIcon} aria-hidden="true">
               ⏱
             </span>
-            <span className={styles.cardTitle}>1分間確認モード</span>
+            <span className={styles.cardTitle}>1分間確認ゲーム</span>
             <span className={styles.cardCaption}>
               {oneMinuteBest > 0
                 ? `ベスト: ${oneMinuteBest}点`
@@ -182,7 +172,7 @@ export function HomePage() {
             <span className={styles.cardIcon} aria-hidden="true">
               ⏱
             </span>
-            <span className={styles.cardTitle}>1分間確認モード</span>
+            <span className={styles.cardTitle}>1分間確認ゲーム</span>
             <span className={styles.cardCaption}>
               あと {oneMinuteRemaining} 首で解放
             </span>
@@ -196,6 +186,32 @@ export function HomePage() {
           <span className={styles.cardTitle}>選んで学ぶ</span>
           <span className={styles.cardCaption}>自分で札を選んで学習</span>
         </Link>
+
+        <button
+          type="button"
+          className={`${styles.card} ${styles.cardUtility} ${styles.cardHowTo}`}
+          aria-haspopup="dialog"
+          aria-expanded={howToOpen}
+          onClick={() => setHowToOpen(true)}
+        >
+          <span className={styles.cardIcon} aria-hidden="true">
+            📖
+          </span>
+          <span className={styles.cardTitle}>使い方</span>
+        </button>
+
+        <button
+          type="button"
+          className={`${styles.card} ${styles.cardUtility} ${styles.cardSettings}`}
+          aria-haspopup="dialog"
+          aria-expanded={settingsOpen}
+          onClick={() => setSettingsOpen(true)}
+        >
+          <span className={styles.cardIcon} aria-hidden="true">
+            ⚙️
+          </span>
+          <span className={styles.cardTitle}>設定</span>
+        </button>
       </div>
 
       <footer className={styles.footer}>
@@ -223,6 +239,8 @@ export function HomePage() {
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
       />
+
+      <HowToModal open={howToOpen} onClose={() => setHowToOpen(false)} />
     </div>
   );
 }

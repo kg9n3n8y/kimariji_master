@@ -9,7 +9,6 @@
 .header {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
   gap: 12px;
 }
 
@@ -31,30 +30,8 @@
   color: var(--color-correct);
 }
 
-.settingsButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-  min-height: 44px;
-  padding: 0 12px;
-  border: none;
-  border-radius: 10px;
-  background: linear-gradient(180deg, #5a5a5a, #3d3d3d);
-  font-size: 15px;
-  font-weight: bold;
-  color: #fff;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.settingsIcon {
-  font-size: 18px;
-  line-height: 1;
-}
-
 .progressBar {
-  height: 8px;
+  height: 16px;
   border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.6);
   overflow: hidden;
@@ -109,8 +86,39 @@
   background: linear-gradient(135deg, #d46b43, #ff9d4d);
 }
 
+.cardOneMinute.cardDisabled {
+  background: linear-gradient(135deg, #7a7a7a, #a8a8a8);
+  opacity: 1;
+  color: #f7f7f7;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.cardOneMinute.cardDisabled .cardCaption {
+  opacity: 0.9;
+}
+
 .cardStudy {
   background: linear-gradient(135deg, #7b5ea7, #a67fd4);
+}
+
+.cardUtility {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 72px;
+  padding: 12px 14px;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.cardHowTo {
+  background: linear-gradient(135deg, #3d7a86, #5ba8b8);
+}
+
+.cardSettings {
+  background: linear-gradient(180deg, #5a5a5a, #3d3d3d);
 }
 
 .cardDisabled {
@@ -123,7 +131,7 @@
 }
 
 .cardTitle {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: bold;
   line-height: 1.25;
 }
@@ -170,10 +178,6 @@
 @media (min-width: 720px) {
   .page {
     max-width: 560px;
-  }
-
-  .cardTitle {
-    font-size: 18px;
   }
 
   .cardCaption {

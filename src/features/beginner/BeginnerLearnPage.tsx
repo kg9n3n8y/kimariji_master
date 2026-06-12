@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/PageHeader';
 import { goroSlideUrl } from '@/lib/assets';
 import { unlockAudio } from '@/lib/sound';
@@ -30,7 +30,7 @@ export function BeginnerLearnPage() {
   }
 
   const isLast = session.learnIndex >= batch.length - 1;
-  const progress = `${session.learnIndex + 1} / ${batch.length}`;
+  const progress = `学習 ${session.learnIndex + 1} / ${batch.length}`;
 
   const handleNext = () => {
     unlockAudio();
@@ -44,6 +44,20 @@ export function BeginnerLearnPage() {
   return (
     <section className={styles.page}>
       <PageHeader backTo="/" progress={progress} />
+
+      <div className={styles.nav}>
+        <button
+          type="button"
+          className={styles.backButton}
+          onClick={goPrev}
+          disabled={session.learnIndex === 0}
+        >
+          戻る
+        </button>
+        <button type="button" className={styles.nextButton} onClick={handleNext}>
+          {isLast ? 'テストへ' : '次へ'}
+        </button>
+      </div>
 
       <div className={styles.slide}>
         <img
@@ -61,32 +75,6 @@ export function BeginnerLearnPage() {
           {fuda.no}番 / {fuda.author}
         </p>
       </div>
-
-      <div className={styles.nav}>
-        <button
-          type="button"
-          className={styles.navButton}
-          onClick={goPrev}
-          disabled={session.learnIndex === 0}
-        >
-          ←
-        </button>
-        <button type="button" className={styles.nextButton} onClick={handleNext}>
-          {isLast ? 'テストへ →' : '次へ →'}
-        </button>
-        <button
-          type="button"
-          className={styles.navButton}
-          onClick={goNext}
-          disabled={isLast}
-        >
-          →
-        </button>
-      </div>
-
-      <Link className={styles.quit} to="/">
-        ホームに戻る
-      </Link>
     </section>
   );
 }

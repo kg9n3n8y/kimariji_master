@@ -26,7 +26,11 @@ import type { BeginnerTestHomeState } from '@/features/beginner/types';
 import type { Fuda } from '@/types/fuda';
 import styles from '@/features/beginner/BeginnerQuizPage.module.css';
 
-type QuizSegment = 'main' | 'review';
+type QuizSegment = 'main' | 'review' | 'retest';
+
+function pickRetestBatch(records: QuizAnswerRecord[]): Fuda[] {
+  return records.filter((record) => !record.isCorrect).map((record) => record.correct);
+}
 
 export function BeginnerQuizPage() {
   const navigate = useNavigate();
@@ -35,9 +39,11 @@ export function BeginnerQuizPage() {
   const learnedAtQuizStartRef = useRef(learnedCount);
   const completingRef = useRef(false);
   const mainRecordsRef = useRef<QuizAnswerRecord[]>([]);
+  const reviewRecordsRef = useRef<QuizAnswerRecord[]>([]);
 
   const [segment, setSegment] = useState<QuizSegment>('main');
   const [reviewBatch, setReviewBatch] = useState<Fuda[]>([]);
+  const [retestBatch, setRetestBatch] = useState<Fuda[]>([]);
   const [exitConfirmOpen, setExitConfirmOpen] = useState(false);
 
   const isPractice = session?.mode === 'practice';
@@ -63,6 +69,15 @@ export function BeginnerQuizPage() {
     return buildQuestionsForReview(reviewBatch, learned);
     // reviewBatch 確定後に一度だけ生成
   }, [reviewBatch, reviewKey]);
+
+  const retestKey = retestBatch.map((f) => f.no).join(',');
+  const retestQuestions = useMemo(() => {
+    if (retestBatch.length === 0) {
+      return [];
+    }
+    return buildQuestionsForBatch(retestBatch, unlearnedFuda);
+    // unlearnedFuda は意図的に依存配列から除外
+  }, [retestBatch, retestKey]);
 
   const finishAll = useCallback(
     (
@@ -94,6 +109,22 @@ export function BeginnerQuizPage() {
     [navigate],
   );
 
+  const proceedAfterReview = useCallback(
+    (reviewRecords: QuizAnswerRecord[] = []) => {
+      reviewRecordsRef.current = reviewRecords;
+      const retest = pickRetestBatch(mainRecordsRef.current);
+
+      if (retest.length === 0) {
+        finishAll(mainRecordsRef.current, reviewRecords);
+        return;
+      }
+
+      setRetestBatch(retest);
+      setSegment('retest');
+    },
+    [finishAll],
+  );
+
   useEffect(() => {
     if (completingRef.current) {
       return;
@@ -110,9 +141,20 @@ export function BeginnerQuizPage() {
       reviewQuestions.length === 0 &&
       !completingRef.current
     ) {
-      finishAll(mainRecordsRef.current);
+      proceedAfterReview();
     }
-  }, [finishAll, reviewBatch.length, reviewQuestions.length, segment]);
+  }, [proceedAfterReview, reviewBatch.length, reviewQuestions.length, segment]);
+
+  useEffect(() => {
+    if (
+      segment === 'retest' &&
+      retestBatch.length > 0 &&
+      retestQuestions.length === 0 &&
+      !completingRef.current
+    ) {
+      finishAll(mainRecordsRef.current, reviewRecordsRef.current);
+    }
+  }, [finishAll, retestBatch.length, retestQuestions.length, segment]);
 
   if (!session || batch.length === 0) {
     return null;
@@ -136,7 +178,7 @@ export function BeginnerQuizPage() {
     const review = pickReviewBatch(learned, loadLearnedAt());
 
     if (review.length === 0) {
-      finishAll(records);
+      proceedAfterReview();
       return;
     }
 
@@ -145,7 +187,17 @@ export function BeginnerQuizPage() {
   };
 
   const handleReviewComplete = (records: QuizAnswerRecord[]) => {
-    finishAll(mainRecordsRef.current, records);
+    proceedAfterReview(records);
+  };
+
+  const handleRetestAnswer = (record: QuizAnswerRecord) => {
+    if (record.isCorrect) {
+      markLearned(record.correct.no, true);
+    }
+  };
+
+  const handleRetestComplete = () => {
+    finishAll(mainRecordsRef.current, reviewRecordsRef.current);
   };
 
   const handleBackToTop = () => {
@@ -173,6 +225,10 @@ export function BeginnerQuizPage() {
     return null;
   }
 
+  if (segment === 'retest' && retestQuestions.length === 0) {
+    return null;
+  }
+
   return (
     <section className={styles.page}>
       {segment === 'main' ? (
@@ -185,15 +241,28 @@ export function BeginnerQuizPage() {
           onAnswer={handleMainAnswer}
           onComplete={handleMainComplete}
         />
-      ) : (
+      ) : segment === 'review' ? (
         <QuizPlayer
           key={`review-${reviewKey}`}
           questions={reviewQuestions}
           layout="beginner"
           progressPrefix="復習"
+          progressTheme="review"
           onBackToTop={handleBackToTop}
           incorrectAdvance="manual"
           onComplete={handleReviewComplete}
+        />
+      ) : (
+        <QuizPlayer
+          key={`retest-${retestKey}`}
+          questions={retestQuestions}
+          layout="beginner"
+          progressPrefix="再出題"
+          progressTheme="retest"
+          onBackToTop={handleBackToTop}
+          incorrectAdvance="manual"
+          onAnswer={handleRetestAnswer}
+          onComplete={handleRetestComplete}
         />
       )}
 

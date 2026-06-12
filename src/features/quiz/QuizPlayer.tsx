@@ -4,7 +4,11 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { GoroModal } from '@/components/GoroModal';
+import { BackNavButton } from '@/components/BackNavButton';
+import {
+  ProgressBadge,
+  type ProgressBadgeTheme,
+} from '@/components/ProgressBadge';
 import { fudaImageUrl, goroSlideUrl } from '@/lib/assets';
 import {
   playCorrectSound,
@@ -27,6 +31,8 @@ type QuizPlayerProps = {
   scoreLabel?: string;
   progressLabel?: string;
   progressPrefix?: string;
+  /** 初心者モードの進捗バッジ配色 */
+  progressTheme?: ProgressBadgeTheme;
   timerSlot?: ReactNode;
   /** 初心者モード用: スコア非表示・進捗をヘッダー右上・トップ戻る */
   layout?: 'default' | 'beginner';
@@ -46,6 +52,7 @@ export function QuizPlayer({
   scoreLabel,
   progressLabel,
   progressPrefix = '問題',
+  progressTheme = 'main',
   timerSlot,
   layout = 'default',
   onBackToTop,
@@ -62,13 +69,12 @@ export function QuizPlayer({
   const [pendingRecord, setPendingRecord] = useState<QuizAnswerRecord | null>(
     null,
   );
-  const [goroOpen, setGoroOpen] = useState(false);
 
   const current = questions[index];
   const correctCount = records.filter((r) => r.isCorrect).length;
   const progressText =
     progressLabel ?? `${progressPrefix} ${index + 1} / ${questions.length}`;
-  const collapseChoices = phase === 'incorrect-review';
+  const showQuizChoices = phase === 'answering' || phase === 'feedback';
 
   useEffect(() => {
     window.dispatchEvent(
@@ -96,7 +102,6 @@ export function QuizPlayer({
       setPhase('answering');
       setSelectedNo(null);
       setPendingRecord(null);
-      setGoroOpen(false);
     },
     [finalFeedbackMs, index, onComplete, questions.length],
   );
@@ -165,15 +170,6 @@ export function QuizPlayer({
     commitRecord(pendingRecord);
   };
 
-  const handleShowGoro = () => {
-    const imageFile = current?.correct.goroImage?.trim() ?? '';
-    if (!imageFile) {
-      window.alert('この札の覚え方画像は登録されていません。');
-      return;
-    }
-    setGoroOpen(true);
-  };
-
   if (!current) {
     return null;
   }
@@ -184,17 +180,11 @@ export function QuizPlayer({
     : '';
 
   return (
-    <div className={styles.player}>
+    <div className={`${styles.player} ${styles.playerViewportFit}`}>
       {layout === 'beginner' ? (
         <header className={styles.beginnerHeader}>
-          <button
-            type="button"
-            className={styles.backToTop}
-            onClick={() => onBackToTop?.()}
-          >
-            ← トップ
-          </button>
-          <span className={styles.beginnerProgress}>{progressText}</span>
+          <BackNavButton label="トップ" onClick={() => onBackToTop?.()} />
+          <ProgressBadge theme={progressTheme}>{progressText}</ProgressBadge>
         </header>
       ) : (
         <>
@@ -210,53 +200,46 @@ export function QuizPlayer({
         </>
       )}
 
-      <h2 className={styles.kimariji}>{current.correct.kimariji}</h2>
+      {showQuizChoices && (
+        <div className={styles.quizStage}>
+          <h2 className={styles.kimariji}>{current.correct.kimariji}</h2>
 
-      <div
-        className={[
-          styles.grid,
-          collapseChoices ? styles.gridCollapsed : '',
-        ]
-          .filter(Boolean)
-          .join(' ')}
-      >
-        {current.choices.map((fuda) => {
-          const isSelected = selectedNo === fuda.no;
-          const isCorrectCard = fuda.no === current.correct.no;
+          <div className={styles.grid}>
+            {current.choices.map((fuda) => {
+              const isSelected = selectedNo === fuda.no;
+              const isCorrectCard = fuda.no === current.correct.no;
 
-          if (collapseChoices && !isCorrectCard) {
-            return null;
-          }
+              const showCorrectHighlight =
+                phase !== 'answering' && isCorrectCard;
+              const showWrongHighlight =
+                phase !== 'answering' && isSelected && !isCorrectAnswer;
 
-          const showCorrectHighlight =
-            phase !== 'answering' && isCorrectCard;
-          const showWrongHighlight =
-            phase !== 'answering' && isSelected && !isCorrectAnswer;
-
-          return (
-            <button
-              key={`${index}-${fuda.no}`}
-              type="button"
-              className={[
-                styles.choice,
-                showCorrectHighlight ? styles.choiceCorrect : '',
-                showWrongHighlight ? styles.choiceWrong : '',
-                phase !== 'answering' ? styles.choiceLocked : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-              onClick={() => handleSelect(fuda)}
-              disabled={phase !== 'answering'}
-            >
-              <img
-                src={fudaImageUrl(fuda)}
-                alt={`取り札 ${fuda.no}番`}
-                draggable={false}
-              />
-            </button>
-          );
-        })}
-      </div>
+              return (
+                <button
+                  key={`${index}-${fuda.no}`}
+                  type="button"
+                  className={[
+                    styles.choice,
+                    showCorrectHighlight ? styles.choiceCorrect : '',
+                    showWrongHighlight ? styles.choiceWrong : '',
+                    phase !== 'answering' ? styles.choiceLocked : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  onClick={() => handleSelect(fuda)}
+                  disabled={phase !== 'answering'}
+                >
+                  <img
+                    src={fudaImageUrl(fuda)}
+                    alt={`取り札 ${fuda.no}番`}
+                    draggable={false}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {phase === 'feedback' && (
         <div
@@ -271,37 +254,32 @@ export function QuizPlayer({
 
       {phase === 'incorrect-review' && (
         <div className={styles.incorrectReview}>
-          <p className={styles.incorrectReviewMessage}>
-            語呂合わせで確認してから次へ進もう
-          </p>
-          <div className={styles.incorrectReviewActions}>
-            <button
-              type="button"
-              className={styles.goroButton}
-              onClick={handleShowGoro}
-            >
-              <span className={styles.goroButtonIcon} aria-hidden="true">
-                👀
-              </span>
-              <span>覚え方を見る</span>
-            </button>
-            <button
-              type="button"
-              className={styles.nextButton}
-              onClick={handleConfirmNext}
-            >
-              次へ →
-            </button>
+          <h2 className={styles.kimariji}>{current.correct.kimariji}</h2>
+          <div className={styles.goroSlide}>
+            {goroImageUrl ? (
+              <img
+                className={styles.goroSlideImage}
+                src={goroImageUrl}
+                alt={`${current.correct.kimariji}の語呂合わせ`}
+                draggable={false}
+              />
+            ) : (
+              <p className={styles.goroSlideMissing}>
+                この札の覚え方画像は登録されていません
+              </p>
+            )}
           </div>
+          <p className={styles.incorrectReviewMessage}>
+            語呂合わせを確認してから次へ進もう
+          </p>
+          <button
+            type="button"
+            className={styles.nextButton}
+            onClick={handleConfirmNext}
+          >
+            次へ
+          </button>
         </div>
-      )}
-
-      {goroOpen && goroImageUrl && (
-        <GoroModal
-          imageUrl={goroImageUrl}
-          alt={`${current.correct.kimariji}の語呂合わせ`}
-          onClose={() => setGoroOpen(false)}
-        />
       )}
     </div>
   );

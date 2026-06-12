@@ -59,7 +59,7 @@ describe('pickReviewBatch', () => {
 describe('pickPracticeTestBatch', () => {
   const now = 1_000_000_000_000;
 
-  it('prioritizes oldest fuda learned 24h+ ago', () => {
+  it('prioritizes oldest fuda learned 6h+ ago', () => {
     const learned = fudalist.slice(0, 8);
     const learnedAt: Record<string, number> = {
       '1': now - REVIEW_INTERVAL_MS - 5000,

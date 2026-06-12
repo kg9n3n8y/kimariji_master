@@ -1,23 +1,29 @@
-import { Link } from 'react-router-dom';
+import { BackNavButton } from '@/components/BackNavButton';
+import {
+  ProgressBadge,
+  type ProgressBadgeTheme,
+} from '@/components/ProgressBadge';
 import styles from '@/components/PageHeader.module.css';
 
 type PageHeaderProps = {
   backTo: string;
   backLabel?: string;
   progress?: string;
+  progressTheme?: ProgressBadgeTheme;
 };
 
 export function PageHeader({
   backTo,
   backLabel = 'トップ',
   progress,
+  progressTheme = 'learn',
 }: PageHeaderProps) {
   return (
     <header className={styles.header}>
-      <Link className={styles.back} to={backTo}>
-        ← {backLabel}
-      </Link>
-      {progress ? <span className={styles.progress}>{progress}</span> : null}
+      <BackNavButton to={backTo} label={backLabel} />
+      {progress ? (
+        <ProgressBadge theme={progressTheme}>{progress}</ProgressBadge>
+      ) : null}
     </header>
   );
 }

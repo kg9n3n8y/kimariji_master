@@ -1,9 +1,10 @@
 .page {
-  max-width: var(--max-width-wide);
+  width: 100%;
+  max-width: var(--max-width-narrow);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: clamp(6px, 1.2vh, 14px);
 }
 
 .slide {
@@ -48,77 +49,36 @@
 
 .nav {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.navButton {
-  width: 52px;
-  height: 52px;
-  border: none;
-  border-radius: 50%;
-  background: linear-gradient(130deg, #536853, #6f8770);
-  color: #fff;
-  font-size: 22px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.navButton:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
+.backButton,
 .nextButton {
   flex: 1;
-  max-width: 280px;
+  max-width: 160px;
+  min-height: 52px;
   border: none;
   border-radius: var(--radius-pill);
   padding: 14px 20px;
-  background: linear-gradient(130deg, #2f6fed, #4f9dff);
-  color: #fff;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
   box-shadow: var(--shadow-card);
 }
 
-.quit {
-  text-align: center;
-  color: var(--color-text-secondary);
-  font-size: 14px;
+.backButton {
+  background: linear-gradient(130deg, #536853, #6f8770);
+  color: #fff;
 }
 
-@media (min-width: 720px) {
-  .page {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      'header header'
-      'slide info'
-      'nav nav'
-      'quit quit';
-    align-items: start;
-  }
+.backButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 
-  .page > :first-child {
-    grid-area: header;
-  }
-
-  .slide {
-    grid-area: slide;
-  }
-
-  .info {
-    grid-area: info;
-  }
-
-  .nav {
-    grid-area: nav;
-  }
-
-  .quit {
-    grid-area: quit;
-  }
+.nextButton {
+  background: linear-gradient(130deg, #2f6fed, #4f9dff);
+  color: #fff;
 }

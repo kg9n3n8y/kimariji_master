@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { BackNavButton } from '@/components/BackNavButton';
 import { GoroModal } from '@/components/GoroModal';
 import {
   fudaImageUrl,
@@ -132,9 +133,7 @@ export function CheckPlayPage() {
   return (
     <section className={styles.page} aria-live="polite">
       <header className={styles.header}>
-        <button type="button" className={styles.back} onClick={handleBack}>
-          ← トップ
-        </button>
+        <BackNavButton label="トップ" onClick={handleBack} />
       </header>
 
       <button

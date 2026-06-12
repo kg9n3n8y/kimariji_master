@@ -3,7 +3,7 @@ import { pickRandomBatch } from '@/lib/quiz';
 
 export const BEGINNER_BATCH_SIZE = 5;
 export const REVIEW_BATCH_MAX = 3;
-export const REVIEW_INTERVAL_MS = 24 * 60 * 60 * 1000;
+export const REVIEW_INTERVAL_MS = 6 * 60 * 60 * 1000;
 
 /** 未覚え札を studyOrder 昇順で最大 count 首選ぶ */
 export function pickNewLearnBatch(
@@ -47,7 +47,7 @@ export function pickReviewBatch(
 
 /**
  * 100首完走後の復習テスト用。
- * 24時間以上前に覚えた札を古い順に優先し、不足分はランダムで5首まで補充。
+ * 6時間以上前に覚えた札を古い順に優先し、不足分はランダムで5首まで補充。
  * 該当札がなければ覚えた札からランダム5首。
  */
 export function pickPracticeTestBatch(
