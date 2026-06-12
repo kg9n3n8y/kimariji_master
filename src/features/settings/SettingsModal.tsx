@@ -6,6 +6,7 @@ import {
   isLetterFullyLearned,
 } from '@/stores/learnedStore';
 import { formatKimarijiButtonLabel } from '@/features/settings/formatKimarijiButtonLabel';
+import { OfflineDownloadSection } from '@/features/settings/OfflineDownloadSection';
 import { useLearned } from '@/stores/LearnedContext';
 import styles from '@/features/settings/SettingsModal.module.css';
 
@@ -101,6 +102,8 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
           </header>
 
           <div className={styles.body}>
+            <OfflineDownloadSection />
+
             <div className={styles.sectionHeader}>
               <h3 className={styles.sectionTitle}>1文字目で選ぶ</h3>
               <button

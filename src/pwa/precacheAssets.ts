@@ -2,12 +2,22 @@ import { buildImageAssetUrls } from '@/pwa/buildImageAssetUrls';
 import { STORAGE_KEYS } from '@/stores/storageKeys';
 
 /** 画像セットが変わったらインクリメントして再プリフェッチ */
-export const ASSET_PRECACHE_VERSION = '2';
+export const ASSET_PRECACHE_VERSION = '3';
 
 const PREFETCH_CONCURRENCY = 4;
 const FETCH_TIMEOUT_MS = 12_000;
 const SW_READY_TIMEOUT_MS = 15_000;
 const OVERALL_PREFETCH_TIMEOUT_MS = 8 * 60_000;
+
+export type DownloadOfflineAssetsOptions = {
+  force?: boolean;
+  onPhase?: (phase: 'waiting-sw' | 'downloading') => void;
+  onProgress?: (done: number, total: number) => void;
+};
+
+export function getOfflineAssetCount(): number {
+  return buildImageAssetUrls().length;
+}
 
 export function isAssetPrecacheDone(): boolean {
   try {
@@ -91,23 +101,23 @@ export async function waitForServiceWorkerReady(): Promise<void> {
   ]);
 }
 
-export async function ensureOfflineAssetsCached(
-  onProgress?: (done: number, total: number) => void,
+export async function downloadOfflineAssets(
+  options: DownloadOfflineAssetsOptions = {},
 ): Promise<void> {
   if (import.meta.env.DEV) {
     return;
   }
 
-  if (isAssetPrecacheDone()) {
+  if (!options.force && isAssetPrecacheDone()) {
     return;
   }
 
   try {
+    options.onPhase?.('waiting-sw');
+    await waitForServiceWorkerReady();
+    options.onPhase?.('downloading');
     await Promise.race([
-      (async () => {
-        await waitForServiceWorkerReady();
-        await prefetchImageAssets(onProgress);
-      })(),
+      prefetchImageAssets(options.onProgress),
       delay(OVERALL_PREFETCH_TIMEOUT_MS),
     ]);
   } finally {
