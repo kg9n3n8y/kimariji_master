@@ -157,7 +157,7 @@ export function HomePage() {
             <span className={styles.cardIcon} aria-hidden="true">
               ⏱
             </span>
-            <span className={styles.cardTitle}>1分間確認ゲーム</span>
+            <span className={styles.cardTitle}>1分間確認</span>
             <span className={styles.cardCaption}>
               {oneMinuteBest > 0
                 ? `ベスト: ${oneMinuteBest}点`
@@ -172,7 +172,7 @@ export function HomePage() {
             <span className={styles.cardIcon} aria-hidden="true">
               ⏱
             </span>
-            <span className={styles.cardTitle}>1分間確認ゲーム</span>
+            <span className={styles.cardTitle}>1分間確認</span>
             <span className={styles.cardCaption}>
               あと {oneMinuteRemaining} 首で解放
             </span>

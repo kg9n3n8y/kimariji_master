@@ -1,14 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/PageHeader';
+import { PhaseIntroScreen } from '@/components/PhaseIntroScreen';
 import { goroSlideUrl } from '@/lib/assets';
 import { unlockAudio } from '@/lib/sound';
 import { useBeginnerSession } from '@/features/beginner/BeginnerSessionContext';
 import styles from '@/features/beginner/BeginnerLearnPage.module.css';
 
+type LearnPhase = 'intro' | 'learn' | 'test-intro';
+
 export function BeginnerLearnPage() {
   const navigate = useNavigate();
   const { session, batch, goNext, goPrev } = useBeginnerSession();
+  const [learnPhase, setLearnPhase] = useState<LearnPhase>(() =>
+    session && session.learnIndex > 0 ? 'learn' : 'intro',
+  );
 
   useEffect(() => {
     if (!session || batch.length === 0) {
@@ -35,11 +41,29 @@ export function BeginnerLearnPage() {
   const handleNext = () => {
     unlockAudio();
     if (isLast) {
-      navigate('/beginner/quiz');
+      setLearnPhase('test-intro');
       return;
     }
     goNext();
   };
+
+  if (learnPhase === 'intro' || learnPhase === 'test-intro') {
+    return (
+      <section className={styles.page}>
+        <PageHeader backTo="/" />
+        <PhaseIntroScreen
+          text={learnPhase === 'intro' ? '覚えよう' : '確認テスト'}
+          onComplete={() => {
+            if (learnPhase === 'intro') {
+              setLearnPhase('learn');
+              return;
+            }
+            navigate('/beginner/quiz');
+          }}
+        />
+      </section>
+    );
+  }
 
   return (
     <section className={styles.page}>

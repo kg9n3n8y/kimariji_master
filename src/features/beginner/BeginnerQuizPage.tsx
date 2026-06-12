@@ -6,6 +6,8 @@ import {
   buildQuestionsForReview,
 } from '@/features/quiz/buildQuestions';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { BackNavButton } from '@/components/BackNavButton';
+import { PhaseIntroScreen } from '@/components/PhaseIntroScreen';
 import {
   QuizPlayer,
   type QuizAnswerRecord,
@@ -22,19 +24,16 @@ import {
   clearBeginnerSession,
   saveTestHomeResult,
 } from '@/features/beginner/beginnerSession';
+import { pickRetestBatch } from '@/features/beginner/pickRetestBatch';
 import type { BeginnerTestHomeState } from '@/features/beginner/types';
 import type { Fuda } from '@/types/fuda';
 import styles from '@/features/beginner/BeginnerQuizPage.module.css';
 
 type QuizSegment = 'main' | 'review' | 'retest';
 
-function pickRetestBatch(records: QuizAnswerRecord[]): Fuda[] {
-  return records.filter((record) => !record.isCorrect).map((record) => record.correct);
-}
-
 export function BeginnerQuizPage() {
   const navigate = useNavigate();
-  const { batch, session } = useBeginnerSession();
+  const { batch, session, clearPendingPhaseIntro } = useBeginnerSession();
   const { unlearnedFuda, markLearned, learnedCount } = useLearned();
   const learnedAtQuizStartRef = useRef(learnedCount);
   const completingRef = useRef(false);
@@ -45,6 +44,23 @@ export function BeginnerQuizPage() {
   const [reviewBatch, setReviewBatch] = useState<Fuda[]>([]);
   const [retestBatch, setRetestBatch] = useState<Fuda[]>([]);
   const [exitConfirmOpen, setExitConfirmOpen] = useState(false);
+  const [phaseIntroDone, setPhaseIntroDone] = useState(false);
+
+  const phaseIntroText = session?.pendingPhaseIntro ?? null;
+
+  useEffect(() => {
+    if (!session) {
+      return;
+    }
+    if (!session.pendingPhaseIntro) {
+      setPhaseIntroDone(true);
+    }
+  }, [session]);
+
+  const handlePhaseIntroComplete = useCallback(() => {
+    setPhaseIntroDone(true);
+    clearPendingPhaseIntro();
+  }, [clearPendingPhaseIntro]);
 
   const isPractice = session?.mode === 'practice';
   const batchKey = session?.batchNos.join(',') ?? '';
@@ -75,9 +91,13 @@ export function BeginnerQuizPage() {
     if (retestBatch.length === 0) {
       return [];
     }
+    const learned = getLearnedFuda(loadLearnedState());
+    if (isPractice) {
+      return buildQuestionsForPractice(retestBatch, learned);
+    }
     return buildQuestionsForBatch(retestBatch, unlearnedFuda);
     // unlearnedFuda は意図的に依存配列から除外
-  }, [retestBatch, retestKey]);
+  }, [isPractice, retestBatch, retestKey]);
 
   const finishAll = useCallback(
     (
@@ -112,7 +132,10 @@ export function BeginnerQuizPage() {
   const proceedAfterReview = useCallback(
     (reviewRecords: QuizAnswerRecord[] = []) => {
       reviewRecordsRef.current = reviewRecords;
-      const retest = pickRetestBatch(mainRecordsRef.current);
+      const retest = pickRetestBatch(
+        mainRecordsRef.current,
+        reviewRecords,
+      );
 
       if (retest.length === 0) {
         finishAll(mainRecordsRef.current, reviewRecords);
@@ -169,11 +192,6 @@ export function BeginnerQuizPage() {
   const handleMainComplete = (records: QuizAnswerRecord[]) => {
     mainRecordsRef.current = records;
 
-    if (isPractice) {
-      finishAll(records);
-      return;
-    }
-
     const learned = getLearnedFuda(loadLearnedState());
     const review = pickReviewBatch(learned, loadLearnedAt());
 
@@ -227,6 +245,26 @@ export function BeginnerQuizPage() {
 
   if (segment === 'retest' && retestQuestions.length === 0) {
     return null;
+  }
+
+  if (!phaseIntroDone && phaseIntroText) {
+    return (
+      <section className={`${styles.page} ${styles.pageIntro}`}>
+        <header className={styles.introHeader}>
+          <BackNavButton label="トップ" onClick={handleBackToTop} />
+        </header>
+        <PhaseIntroScreen
+          text={phaseIntroText}
+          onComplete={handlePhaseIntroComplete}
+        />
+        <ConfirmDialog
+          open={exitConfirmOpen}
+          message={'途中でやめると結果は保存されません。\nトップに戻りますか？'}
+          onConfirm={handleExitConfirm}
+          onCancel={() => setExitConfirmOpen(false)}
+        />
+      </section>
+    );
   }
 
   return (

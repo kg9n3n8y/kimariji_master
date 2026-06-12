@@ -16,6 +16,8 @@ export type BeginnerSession = {
   learnIndex: number;
   viewedAll: boolean;
   mode: BeginnerSessionMode;
+  /** クイズ開始前に一度だけ表示するイントロ文言 */
+  pendingPhaseIntro?: string;
 };
 
 function getFudaByNo(no: number): Fuda | undefined {
@@ -57,6 +59,7 @@ export function createPracticeSession(
     learnIndex: 0,
     viewedAll: true,
     mode: 'practice',
+    pendingPhaseIntro: '復習しよう',
   };
 }
 

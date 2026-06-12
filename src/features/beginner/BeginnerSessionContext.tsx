@@ -29,6 +29,7 @@ type BeginnerSessionContextValue = {
   markViewedAll: () => void;
   goNext: () => void;
   goPrev: () => void;
+  clearPendingPhaseIntro: () => void;
 };
 
 const BeginnerSessionContext = createContext<BeginnerSessionContextValue | null>(
@@ -118,6 +119,14 @@ export function BeginnerSessionProvider({ children }: { children: ReactNode }) {
     setLearnIndex(session.learnIndex - 1);
   }, [session, setLearnIndex]);
 
+  const clearPendingPhaseIntro = useCallback(() => {
+    if (!session?.pendingPhaseIntro) {
+      return;
+    }
+    const { pendingPhaseIntro: _removed, ...rest } = session;
+    persist(rest);
+  }, [persist, session]);
+
   const batch = useMemo(
     () => (session ? getBatchFuda(session) : []),
     [session],
@@ -135,9 +144,11 @@ export function BeginnerSessionProvider({ children }: { children: ReactNode }) {
       markViewedAll,
       goNext,
       goPrev,
+      clearPendingPhaseIntro,
     }),
     [
       batch,
+      clearPendingPhaseIntro,
       clearSession,
       goNext,
       goPrev,
