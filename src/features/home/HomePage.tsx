@@ -127,6 +127,14 @@ export function HomePage() {
           </span>
         </Link>
 
+        <Link className={`${styles.card} ${styles.cardStudy}`} to="/study">
+          <span className={styles.cardIcon} aria-hidden="true">
+            📚
+          </span>
+          <span className={styles.cardTitle}>選んで学ぶ</span>
+          <span className={styles.cardCaption}>自分で札を選んで学習</span>
+        </Link>
+
         {checkReady ? (
           <Link className={`${styles.card} ${styles.cardCheck}`} to="/check">
             <span className={styles.cardIcon} aria-hidden="true">
@@ -178,14 +186,6 @@ export function HomePage() {
             </span>
           </div>
         )}
-
-        <Link className={`${styles.card} ${styles.cardStudy}`} to="/study">
-          <span className={styles.cardIcon} aria-hidden="true">
-            📚
-          </span>
-          <span className={styles.cardTitle}>選んで学ぶ</span>
-          <span className={styles.cardCaption}>自分で札を選んで学習</span>
-        </Link>
 
         <button
           type="button"
