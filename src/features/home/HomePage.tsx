@@ -120,7 +120,7 @@ export function HomePage() {
             🌱
           </span>
           <span className={styles.cardTitle}>
-            {allLearned ? 'おてがる復習' : '初心者モード'}
+            {allLearned ? 'おてがる復習' : '５首おぼえる'}
           </span>
           <span className={styles.cardCaption}>
             {allLearned ? '5首の復習テスト' : '5首ずつ覚えてテスト'}

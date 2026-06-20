@@ -94,7 +94,7 @@
 }
 
 .cardOneMinute {
-  background: linear-gradient(135deg, #d46b43, #ff9d4d);
+  background: linear-gradient(135deg, #8c3d3d, #b86161);
 }
 
 .cardOneMinute.cardDisabled {
@@ -109,7 +109,7 @@
 }
 
 .cardStudy {
-  background: linear-gradient(135deg, #7b5ea7, #a67fd4);
+  background: linear-gradient(135deg, #a85c32, #c88a5a);
 }
 
 .cardUtility {
@@ -125,7 +125,7 @@
 }
 
 .cardHowTo {
-  background: linear-gradient(135deg, #3d7a86, #5ba8b8);
+  background: linear-gradient(135deg, #6d6964, #8a8580);
 }
 
 .cardSettings {
