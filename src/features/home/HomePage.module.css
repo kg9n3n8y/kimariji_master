@@ -79,7 +79,7 @@
 }
 
 .cardCheck {
-  background: linear-gradient(135deg, #4a5a7a, #6b7d9e);
+  background: linear-gradient(135deg, #425a8a, #6480b0);
 }
 
 .cardCheck.cardDisabled {
@@ -125,11 +125,11 @@
 }
 
 .cardHowTo {
-  background: linear-gradient(135deg, #6d6964, #8a8580);
+  background: linear-gradient(135deg, #8a7438, #b89a62);
 }
 
 .cardSettings {
-  background: linear-gradient(180deg, #5c5854, #43403c);
+  background: linear-gradient(135deg, #6b5a7a, #8f7da8);
 }
 
 .cardDisabled {
